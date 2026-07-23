@@ -24,7 +24,7 @@ TBD — Stage 0 尚未执行，`package.json`/pnpm workspace 尚未生成，因�
 
 ## Boundaries
 Ask first（触碰任一必须停下问用户，等同主提示词 §2.4 HITL）：
-- Sanity 生产 Schema deploy / dataset replace / 生产 publish / 删除内容
+- Sanity 生产 Schema deploy / dataset replace / 生产 publish / 删除内容（Stage 2 分批迁移时，同模板组按批次审批一次代表页即可，不必逐页审批；某页验收器未过项则该页单独升级为页面级 HITL）
 - 首次切换真实 Legacy Adapter（Reverse ASIN 引擎/账号体系/支付）
 - Handoff 目标域名变更（`TBD-SELLERSPRITE-HOST` 未定案前禁止擅自二选一——见 `Development_Process/ARCHITECTURE.md` § Open questions）
 - `seo/hot/*` 程序化页是否收录
@@ -37,7 +37,7 @@ Never：push/publish/force ops；编辑 `../原网站代码asinseed/` 下任何�
 本项目有两条并行但不同性质的工作流，不要混用：
 
 1. **JSP 迁移（Migration Loop 轨道）**：唯一权威流程定义在 `../prd-docs/prompts/00_migration_loop_master_prompt.txt`——P1(发现归类)→P2(契约Schema)→P3(实现导入)→P4(验收放行) 单页节拍，Stage 0(搭loop)→1(试点)→2(分批)→3(放行) 整体节奏，10 项统一验收器，6 项 HITL 硬门禁。`Development_Process/WORKFLOW.md` 只索引不复制。P1/P4 产物写入 `Development_Process/migration/`，跨页汇总写入 `Development_Process/mappings/`（见 `Development_Process/DECISIONS.md` D-002）。迁移相关的所有工作走这条线，不套用下面的 spec/plan/tasks 三闸门。
-2. **非迁移新功能**（迁移完成后的新特性、与 JSP 无关的新增能力）：走 `Development_Process/specs/NNN-<name>/`（spec → plan → tasks），每个产物需我明确批准才能进入下一步，模板与闸门规则见 `Development_Process/WORKFLOW.md`。
+2. **非迁移新功能**（迁移完成后的新特性、与 JSP 无关的新增能力）：走 `Development_Process/specs/NNN-<name>/`（spec → plan → tasks），每个产物需我明确批准才能进入下一步，模板与闸门规则见 `Development_Process/WORKFLOW.md`。判断走哪条线：改动源自某 JSP 页面尚未迁移完的内容/字段 → 走 1；改动一个已过 P4 验收页面的新增能力（JSP 里没有对应物）→ 走本条。
 3. 小改动（≤ 2 文件，不涉及 schema/API/permission）跳过 spec 流程，两条线都适用。
 4. 迁移批次提交：`feat(migration-<page>): P<n> <summary>`；spec 流程提交：`feat(NNN-<name>): Tn <summary>`。
 5. 架构性选择先查 `Development_Process/DECISIONS.md`，决定后追加记录；模块总览见 `Development_Process/ARCHITECTURE.md`。

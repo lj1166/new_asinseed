@@ -7,7 +7,7 @@ This repo runs two workflows side by side. Which one applies is decided by task 
 Authoritative, complete definition: `../../prd-docs/prompts/00_migration_loop_master_prompt.txt`. This file does not duplicate it — only indexes the shape so an agent knows where to look:
 
 - §1 — two tracks (Migration Loop / Content Agent), naming, do-not-confuse rule.
-- §2 — the P1→P2→P3→P4 per-page/batch cadence, the 10-item unified verifier (§2.3), the 6 HITL hard gates (§2.4), the Mock-only data rule (§2.5).
+- §2 — the P1→P2→P3→P4 per-page/batch cadence, the 10-item unified verifier (§2.3), the 6 HITL hard gates (§2.4, batch-granularity in Stage 2 — see `AGENTS.md` § Boundaries), the Mock-only data rule (§2.5).
 - §3 — verified facts from the real JSP scan (do not re-scan; treat as ground truth).
 - §4 — tech stack + design-system baseline (shadcn/ui, design tokens).
 - §5 — the `.claude/skills/*` to build in Stage 0.

@@ -9,7 +9,7 @@ This phase (per PRD §0.1) explicitly excludes: full-site migration, real backen
 ## Module responsibilities (prose)
 
 - **`apps/web`** — Next.js App Router site. Renders all indexable pages via RSC. Never calls the real legacy backend, real payment provider, or production DB this phase.
-- **`apps/studio`** — Sanity Studio. Holds only mutable SEO/content fields (SDD §10 `ContentEntry`); agents may write drafts, only a human publishes (SDD §11).
+- **`apps/studio`** — Sanity Studio. Holds only mutable SEO/content fields (SDD §10 `ContentEntry`, `KeywordEntry`, `MaterialAsset`); agents may write drafts, only a human publishes (SDD §11). Content Agent (track B) is now an active build target, not a placeholder: keyword library → material library → agent draft → human review (`workflowState: draft → in_review → approved`) → human-scheduled Sanity Content Release → mechanical publish at the scheduled time. Runs in parallel with track A's migration pilot (ADR-003) — the two tracks don't block each other. Uses Sanity's native Content Releases API + a custom `workflowState` field; no third-party workflow plugin (ADR-005, `Development_Process/DECISIONS.md` D-004).
 - **`packages/contracts`** — Zod schemas for Reverse ASIN / Handoff / Content, shared by `apps/web` and `packages/mock-adapters` so a future real-backend swap doesn't require call-site rewrites.
 - **`packages/mock-adapters`** — The only data-layer implementation this phase: `MockReverseAsinProvider`, `IdentityAdapter`, `EntitlementAdapter` (SDD §5). Shape must match the future real contract; no enterprise-grade retry/fallback design is expected of a mock.
 - **`scripts/migration`** — P1–P4 stage scripts (inventory → schema-draft → import → verify) driven by the Migration Loop workflow, one script family per JSP page/batch.
@@ -30,7 +30,7 @@ User → apps/web (Next.js, Vercel)
          ├─→ Sanity Content Lake        (content + SEO metadata, minimal GROQ projection)
          ├─→ packages/mock-adapters     (Reverse ASIN query / Identity / Entitlement — Mock only)
          └─→ Handoff Service            (reads handoff-registry allowlist)
-                  └─→ SellerSprite      (static deep link; target host: see Open questions)
+                  └─→ SellerSprite      (static deep link; target host: sellersprite.ai)
 ```
 
 Real legacy backend is a future replacement target for `packages/mock-adapters`, not connected this phase (trigger condition: PRD `TBD-REAL-BACKEND-CUTOVER`).
