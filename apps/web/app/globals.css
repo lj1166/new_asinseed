@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * Draft design tokens carried over from the legacy theme at
+ * ../原网站代码asinseed/asinseed-front/src/main/webapp/assets/css/theme.min.css
+ * (Webpixels "Front" Bootstrap theme). HSL triples for shadcn's hsl(var(--x))
+ * convention. --border/--radius are engineering estimates (not present verbatim
+ * in the legacy CSS as extracted values) — refine against real pages in Stage 1+.
+ */
+@layer base {
+  :root {
+    --background: 210 17% 98%;
+    --foreground: 210 10% 23%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 210 10% 23%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 10% 23%;
+
+    --primary: 219 100% 61%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 261 51% 51%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 216 19% 95%;
+    --muted-foreground: 213 8% 40%;
+
+    --accent: 216 19% 95%;
+    --accent-foreground: 210 10% 23%;
+
+    --destructive: 10 95% 46%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 213 9% 85%;
+    --input: 213 9% 85%;
+    --ring: 219 100% 61%;
+
+    --radius: 0.5rem;
+
+    /* Brand accents beyond shadcn's standard slots, kept from the legacy palette. */
+    --brand-success: 170 100% 39%;
+    --brand-warning: 30 96% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+}
