@@ -1,4 +1,4 @@
-# User Flow Map — old journey ↔ new journey
+# 用户流程地图 —— 旧旅程 ↔ 新旅程
 
-| Old journey (steps, JSP pages involved) | New journey (steps, routes involved) | Delta / notes |
+| 旧旅程（步骤、涉及的 JSP 页面） | 新旅程（步骤、涉及的路由） | 差异 / 备注 |
 |---|---|---|

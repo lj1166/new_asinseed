@@ -1,6 +1,6 @@
-# Page Map — old JSP route ↔ new route
+# 页面地图 —— 旧 JSP 路由 ↔ 新路由
 
-Roll-up summary across all pages, updated as each page moves through P1-P4. Per-page detail (full field-level classification, SEO hardcode extraction) lives in `../migration/inventory/<page>/inventory.md`. Planned target mapping (design intent, not live status): SDD §13 URL Inventory, PRD §5 route table — this table tracks actual execution status, it does not restate those.
+跨全部页面的汇总，随每个页面在 P1-P4 间推进而更新。逐页细节（完整字段级归类、SEO 硬编码提取）见 `../migration/inventory/<page>/inventory.md`。规划中的目标映射（设计意图，非实际状态）：SDD §13 URL Inventory、PRD §5 路由表 —— 本表跟踪的是实际执行状态，不重复它们的内容。
 
-| Old JSP path | New route | Template group | Migration status (P1/P2/P3/P4) | Index decision | Notes |
+| 旧 JSP 路径 | 新路由 | 模板分组 | 迁移状态（P1/P2/P3/P4） | 收录决策 | 备注 |
 |---|---|---|---|---|---|

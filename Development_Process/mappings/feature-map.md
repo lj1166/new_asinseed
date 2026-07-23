@@ -1,4 +1,4 @@
-# Feature Map — old feature/module ↔ new implementation
+# 功能地图 —— 旧功能/模块 ↔ 新实现
 
-| Old feature (module) | New implementation (component/route) | Status | Notes |
+| 旧功能（模块） | 新实现（组件/路由） | 状态 | 备注 |
 |---|---|---|---|

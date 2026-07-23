@@ -1,25 +1,24 @@
 # Development_Process
 
-Single home for this project's engineering docs and working memory — nothing project-related should live in a separate `docs/` or root-level `migration/`/`specs/` again (see `DECISIONS.md` D-002 for why this consolidation happened).
+本项目工程文档与项目工作记忆的唯一存放处 —— 任何项目相关内容都不应再散落到独立的 `docs/` 或根目录级 `migration/`/`specs/`（这次整合的原因见 `DECISIONS.md` D-002）。
 
-Session protocol (see `AGENTS.md` § Session protocol for the authoritative version): read `STATE.md` + the last 1-2 `HISTORY.md` entries at session start; rewrite `STATE.md` and append one `HISTORY.md` entry at session end, mandatory every session.
+会话协议（权威版本见 `AGENTS.md` § Session protocol）：会话开始时读 `STATE.md`（其 § 近期变更记录 现在也承载着追加式会话日志）+ 最近的 git log；会话结束时重写 `STATE.md` 并在 § 近期变更记录 追加一条，每次会话强制执行 —— 只追加、绝不改写历史（见 `DECISIONS.md` D-005）。
 
-| Path | Holds | Update trigger |
+| 路径 | 内容 | 更新触发条件 |
 |---|---|---|
-| `STATE.md` | Now / Next / Blockers / Recently landed / Tried & failed — mutable current snapshot | every session end (rewrite) |
-| `HISTORY.md` | append-only session-by-session narrative log | every session end (append) |
-| `ARCHITECTURE.md` | product goal, module responsibilities, invariants, data-flow | only when architecture actually changes |
-| `DECISIONS.md` | append-only hard-to-reverse decision log | when a hard-to-reverse choice is made |
-| `WORKFLOW.md` | index into the master-prompt migration process + the generic spec-gate templates | when the process itself changes |
-| `mappings/page-map.md` | old JSP route ↔ new route, template group, migration status, index decision — roll-up across all pages | as each page enters/exits P1-P4 |
-| `mappings/field-map.md` | old field ↔ new Sanity field or hardcode decision — roll-up across all pages | as each page's P1/P2 classifies fields |
-| `mappings/feature-map.md` | old feature/module ↔ new implementation, status | as each feature is migrated or built |
-| `mappings/user-flow-map.md` | old user journey ↔ new journey, deltas | as journeys are migrated/redesigned |
-| `migration/inventory/<page>/inventory.md` | P1 per-page detailed classification (master-prompt artifact) | during P1, one per page |
-| `migration/reports/report-<batch>.md` | P4 per-batch acceptance report (master-prompt artifact) | during P4, one per batch |
-| `specs/NNN-<name>/{input,spec,plan,tasks}.md` | non-migration feature spec-gate flow | created lazily, first non-migration feature |
+| `STATE.md` | 现状 / 下一步 / 阻塞项 / 近期变更记录（追加式，承接原 `HISTORY.md` 的职能，见 D-005）/ 尝试与失败记录 —— 可变的当前快照 | 每次会话结束（重写 现状/下一步/阻塞项，在 近期变更记录 追加一条） |
+| `ARCHITECTURE.md` | 产品目标、模块职责、不变量、数据流 | 仅当架构实际发生变化时 |
+| `DECISIONS.md` | 追加式的、难以撤销的决策日志 | 做出一个难以撤销的选择时 |
+| `WORKFLOW.md` | 指向 master-prompt 迁移流程 + 通用 spec 闸门模板的索引 | 流程本身发生变化时 |
+| `mappings/page-map.md` | 旧 JSP 路由 ↔ 新路由、模板分组、迁移状态、收录决策 —— 跨全部页面的汇总 | 每个页面进入/退出 P1-P4 时 |
+| `mappings/field-map.md` | 旧字段 ↔ 新 Sanity 字段或硬编码决策 —— 跨全部页面的汇总 | 每个页面的 P1/P2 完成字段归类时 |
+| `mappings/feature-map.md` | 旧功能/模块 ↔ 新实现、状态 | 每个功能被迁移或构建时 |
+| `mappings/user-flow-map.md` | 旧用户旅程 ↔ 新旅程、差异点 | 用户旅程被迁移/重新设计时 |
+| `migration/inventory/<page>/inventory.md` | P1 逐页详细分类（master-prompt 产物） | P1 阶段，每页一份 |
+| `migration/reports/report-<batch>.md` | P4 逐批次验收报告（master-prompt 产物） | P4 阶段，每批次一份 |
+| `specs/NNN-<name>/spec.md` | 非迁移功能流程，现阶段从轻处理：小改动完全跳过此流程，较大改动只需一份简短 `spec.md` 加一句话认可 —— 现阶段不需要单独的 `plan.md`/`tasks.md` 闸门（见 `WORKFLOW.md` §3、`DECISIONS.md` D-005） | 懒创建，第一个需要它的非迁移功能出现时 |
 
-Notes:
-- `mappings/*.md` are roll-up summaries, not the detailed record — keep them to one row per page/field/feature and point into `migration/inventory/<page>/` for detail, so they don't drift into unmaintainable duplicates.
-- `scripts/migration/` (repo root) holds the P1-P4 script *code*; `Development_Process/migration/` holds the *data artifacts* those scripts produce. Don't confuse the two.
-- Old site (`../../原网站代码asinseed`) is read-only reference — never edit. `../../prd-docs/SDD.md` is the primary build reference; `../../prd-docs/PRD.md` is for acceptance/cross-check (§10 AC, §12 DoD).
+补充说明：
+- `mappings/*.md` 是汇总摘要，不是详细记录 —— 保持每页/字段/功能一行，细节指向 `migration/inventory/<page>/`，避免它们膨胀成难以维护的重复内容。
+- `scripts/migration/`（仓库根目录）存放 P1-P4 脚本的*代码*；`Development_Process/migration/` 存放这些脚本产出的*数据产物*。两者不要混淆。
+- 旧站（`../../原网站代码asinseed`）是只读参考 —— 绝不编辑。`../../prd-docs/SDD.md` 是主要的实现依据；`../../prd-docs/PRD.md` 用于验收/对照（§10 AC、§12 DoD）。

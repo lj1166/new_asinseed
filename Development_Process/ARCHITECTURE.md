@@ -1,44 +1,44 @@
-# Architecture
+# 架构
 
-## Product goal and boundaries
+## 产品目标与边界
 
-Rebuild the legacy JSP site (`../../原网站代码asinseed`, Java/Dubbo monolith, **read-only reference — never edit**) as a Next.js + Sanity + Vercel SEO front-end. ASINSeed is the free discovery layer (SEO-driven organic traffic, lightweight Reverse ASIN query); SellerSprite is the paid decision layer. Product responsibility is to hand users off cleanly to SellerSprite once they show decision-grade intent, not to compete with it.
+把旧 JSP 站点（`../../原网站代码asinseed`，Java/Dubbo 单体，**只读参考 —— 禁止编辑**）重建为 Next.js + Sanity + Vercel 的 SEO 前台站点。ASINSeed 是免费的发现层（SEO 驱动的自然流量、轻量 Reverse ASIN 查询）；SellerSprite 是付费的决策层。产品职责是在用户表现出决策级意图后干净地导流给 SellerSprite，而不是与其竞争。
 
-This phase (per PRD §0.1) explicitly excludes: full-site migration, real backend integration, and production release. Full authoritative scope/non-goals: `../../prd-docs/PRD.md` §0.2/§2.3, process detail: `../../prd-docs/prompts/00_migration_loop_master_prompt.txt`. **SDD.md is the primary build reference; PRD.md is used for acceptance/cross-check (§10 AC, §12 DoD), not as the primary implementation spec.**
+本阶段（依据 PRD §0.1）明确排除：全站迁移、真实后端接入、生产发布。完整权威范围/非目标见 `../../prd-docs/PRD.md` §0.2/§2.3，流程细节见 `../../prd-docs/prompts/00_migration_loop_master_prompt.txt`。**SDD.md 是主要的实现依据；PRD.md 用于验收/对照（§10 AC、§12 DoD），不作为主要实现规格来源。**
 
-## Module responsibilities (prose)
+## 模块职责（叙述）
 
-- **`apps/web`** — Next.js App Router site. Renders all indexable pages via RSC. Never calls the real legacy backend, real payment provider, or production DB this phase.
-- **`apps/studio`** — Sanity Studio. Holds only mutable SEO/content fields (SDD §10 `ContentEntry`, `KeywordEntry`, `MaterialAsset`); agents may write drafts, only a human publishes (SDD §11). Content Agent (track B) is now an active build target, not a placeholder: keyword library → material library → agent draft → human review (`workflowState: draft → in_review → approved`) → human-scheduled Sanity Content Release → mechanical publish at the scheduled time. Runs in parallel with track A's migration pilot (ADR-003) — the two tracks don't block each other. Uses Sanity's native Content Releases API + a custom `workflowState` field; no third-party workflow plugin (ADR-005, `Development_Process/DECISIONS.md` D-004).
-- **`packages/contracts`** — Zod schemas for Reverse ASIN / Handoff / Content, shared by `apps/web` and `packages/mock-adapters` so a future real-backend swap doesn't require call-site rewrites.
-- **`packages/mock-adapters`** — The only data-layer implementation this phase: `MockReverseAsinProvider`, `IdentityAdapter`, `EntitlementAdapter` (SDD §5). Shape must match the future real contract; no enterprise-grade retry/fallback design is expected of a mock.
-- **`scripts/migration`** — P1–P4 stage scripts (inventory → schema-draft → import → verify) driven by the Migration Loop workflow, one script family per JSP page/batch.
+- **`apps/web`** —— Next.js App Router 站点。通过 RSC 渲染所有可收录页面。本阶段绝不调用真实旧后端、真实支付服务商或生产数据库。
+- **`apps/studio`** —— Sanity Studio。只承载真正可变的 SEO/内容字段（SDD §10 的 `ContentEntry`、`KeywordEntry`、`MaterialAsset`）；agent 可写草稿，只有人工才能发布（SDD §11）。Content Agent（轨B）的设计已就位 —— 关键词库 → 素材库 → agent 写草稿 → 人工评审（`workflowState: draft → in_review → approved`）→ 人工设定 Sanity Content Release 定时 → 到点机械发布 —— 使用 Sanity 原生的 Content Releases API + 自定义 `workflowState` 字段，无需第三方插件（ADR-005，见 `Development_Process/DECISIONS.md` D-004）。**当前暂停**（`DECISIONS.md` D-005）：schema 已建好，但 `workflowState` actions 与 Content Releases 接线要等轨A Stage 1 试点通过后才开始。
+- **`packages/contracts`** —— Reverse ASIN / Handoff / Content 的 Zod schema，由 `apps/web` 与 `packages/mock-adapters` 共用，使未来切换真实后端时无需重写调用点。
+- **`packages/mock-adapters`** —— 本阶段唯一的数据层实现：`MockReverseAsinProvider`、`IdentityAdapter`、`EntitlementAdapter`（SDD §5）。形状必须匹配未来真实契约；不要求 mock 具备企业级重试/降级设计。
+- **`scripts/migration`** —— 由 Migration Loop 工作流驱动的 P1-P4 阶段脚本（盘点 → schema 草案 → 导入 → 验收），每个 JSP 页面/批次对应一套脚本。
 
-## Key invariants
+## 关键不变量
 
-- A single server-computed `IndexDecision` (SDD §7.1) feeds metadata, sitemap, and tests — never three separately-computed values that could disagree.
-- Query-result pages (`/{locale}/{market}/{asin}`) are always `noindex` and never in the sitemap.
-- Every new indexable page is linked from at least one other indexable page (no orphans).
-- A result page renders at most one Handoff CTA; its target host must be in the `handoff-registry` allowlist. No hardcoded SellerSprite links anywhere in page code.
-- Sanity schema holds only fields that are genuinely mutable SEO/content data. Price values (`price.jsp` origin) are always hardcoded, never stored in Sanity.
-- `packages/mock-adapters` is the only path for Reverse ASIN / Identity / Entitlement business data this phase. No code calls the real Java/Dubbo backend, real payment provider, or production DB without the HITL approval in AGENTS.md § Boundaries.
+- 单一的服务端计算 `IndexDecision`（SDD §7.1）同时驱动 metadata、sitemap 与测试 —— 绝不允许三处各自计算、可能互相矛盾的值。
+- 查询结果页（`/{locale}/{market}/{asin}`）永远是 `noindex`，且永远不出现在 sitemap 中。
+- 每个新的可收录页面至少被另一个可收录页面链接到（不允许孤儿页面）。
+- 一个结果页最多渲染一个 Handoff CTA；其目标域名必须在 `handoff-registry` 白名单内。页面代码中任何地方都不得硬编码 SellerSprite 链接。
+- Sanity schema 只承载真正可变的 SEO/内容数据字段。价格数值（源自 `price.jsp`）永远硬编码，绝不存入 Sanity。
+- `packages/mock-adapters` 是本阶段 Reverse ASIN / Identity / Entitlement 业务数据的唯一路径。未经 `AGENTS.md` § Boundaries 中的 HITL 批准，任何代码都不得调用真实 Java/Dubbo 后端、真实支付服务商或生产数据库。
 
-## Data-flow overview
+## 数据流总览
 
 ```
 User → apps/web (Next.js, Vercel)
-         ├─→ Sanity Content Lake        (content + SEO metadata, minimal GROQ projection)
-         ├─→ packages/mock-adapters     (Reverse ASIN query / Identity / Entitlement — Mock only)
-         └─→ Handoff Service            (reads handoff-registry allowlist)
-                  └─→ SellerSprite      (static deep link; target host: sellersprite.ai)
+         ├─→ Sanity Content Lake        (内容 + SEO metadata，最小化 GROQ projection)
+         ├─→ packages/mock-adapters     (Reverse ASIN 查询 / Identity / Entitlement —— 仅 Mock)
+         └─→ Handoff Service            (读取 handoff-registry 白名单)
+                  └─→ SellerSprite      (静态深链；目标域名：sellersprite.ai)
 ```
 
-Real legacy backend is a future replacement target for `packages/mock-adapters`, not connected this phase (trigger condition: PRD `TBD-REAL-BACKEND-CUTOVER`).
+真实旧后端是 `packages/mock-adapters` 未来的替换目标，本阶段不接入（触发条件：PRD `TBD-REAL-BACKEND-CUTOVER`）。
 
-## Open questions affecting this architecture
+## 影响本架构的未决问题
 
-These are carried from `../../prd-docs/PRD.md` §0.3 — do not resolve them by inference:
+以下延续自 `../../prd-docs/PRD.md` §0.3 —— 不得凭推断擅自解决：
 
-- ~~Handoff target domain~~ — **resolved 2026-07-22**: `sellersprite.ai` (business confirmation; see `DECISIONS.md` D-003). The legacy `sellersprite.com` link in `search.jsp` is not migrated.
-- `seo/hot/*` programmatic pages: inclusion/merge strategy pending content-quality review (PRD `TBD-SEO-programmatic`).
-- Mock → real backend cutover timing: pending business confirmation or an approved `legacy-contract-report.md` (PRD `TBD-REAL-BACKEND-CUTOVER`).
+- ~~Handoff 目标域名~~ —— **已于 2026-07-22 解决**：`sellersprite.ai`（业务确认；见 `DECISIONS.md` D-003）。`search.jsp` 中旧的 `sellersprite.com` 链接不迁移。
+- `seo/hot/*` 程序化页面：是否收录/合并策略待内容质量评审确认（PRD `TBD-SEO-programmatic`）。
+- Mock → 真实后端切换时机：待业务确认，或需一份经批准的 `legacy-contract-report.md`（PRD `TBD-REAL-BACKEND-CUTOVER`）。

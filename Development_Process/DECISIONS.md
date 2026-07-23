@@ -1,37 +1,49 @@
-# Decisions
+# 决策记录
 
-Append-only log. Never rewrite history — add a new entry to correct or supersede an old one.
+追加式日志。绝不改写历史 —— 要修正或取代旧决策，就新增一条条目。
 
 ```md
-## D-NNN: <title> (<date>, accepted)
-- Context: <1-3 lines>
-- Decision: <1 line>
-- Alternatives rejected: <1-2 lines, with why>
-- Consequences: <1-2 lines>
+## D-NNN: <标题> (<日期>, accepted)
+- 背景：<1-3 行>
+- 决策：<1 行>
+- 被拒绝的备选方案：<1-2 行，含原因>
+- 后果：<1-2 行>
 ```
 
 ---
 
-## D-001: CLAUDE.md stays a one-line pointer; master-prompt §8's CLAUDE.md content lives in AGENTS.md/WORKFLOW.md instead (2026-07-22, accepted)
-- Context: `../../prd-docs/prompts/00_migration_loop_master_prompt.txt` §8 specifies generating a standalone ~100-140 line `CLAUDE.md` as Stage 0's first deliverable. The project-init framework this repo follows mandates `AGENTS.md` as the single constitution, with `CLAUDE.md` reduced to a one-line `@AGENTS.md` import to prevent two divergent rule files.
-- Decision: `AGENTS.md` is the constitution; `CLAUDE.md` = `@AGENTS.md`. When Stage 0 runs, master-prompt §8's required content (business north star, context management, P1-P4 map, coding conventions, Handoff/CTA minimal impl, iron rules, self-check, HITL summary, scope, reference paths) gets folded into `AGENTS.md` + `Development_Process/WORKFLOW.md`, not written into a second full file.
-- Alternatives rejected: Generate `CLAUDE.md` verbatim per master-prompt §8 — rejected, creates two rule files that can drift apart over time.
-- Consequences: Stage 0 execution must adapt master-prompt §8's "generate CLAUDE.md" step into "update AGENTS.md + Development_Process/WORKFLOW.md" — flag this adaptation explicitly when Stage 0 starts so it isn't a silent deviation from what the master prompt literally says.
+## D-001: CLAUDE.md 保持一行指针；master-prompt §8 要求的 CLAUDE.md 内容改放进 AGENTS.md/WORKFLOW.md (2026-07-22, accepted)
+- 背景：`../../prd-docs/prompts/00_migration_loop_master_prompt.txt` §8 要求把一份独立的、约 100-140 行的 `CLAUDE.md` 作为 Stage 0 的第一个交付物。本仓库遵循的 project-init 框架规定 `AGENTS.md` 是唯一的宪法文件，`CLAUDE.md` 精简为一行 `@AGENTS.md` 引用，以防止出现两份互相偏离的规则文件。
+- 决策：`AGENTS.md` 是宪法文件；`CLAUDE.md` = `@AGENTS.md`。Stage 0 执行时，master-prompt §8 要求的内容（业务北极星、上下文管理、P1-P4 地图、编码约定、Handoff/CTA 最小实现、铁律、自检、HITL 摘要、范围、参考路径）并入 `AGENTS.md` + `Development_Process/WORKFLOW.md`，而不是另写一份完整文件。
+- 被拒绝的备选方案：按 master-prompt §8 逐字生成 `CLAUDE.md` —— 被拒绝，会产生两份可能随时间漂移的规则文件。
+- 后果：Stage 0 执行时必须把 master-prompt §8 "生成 CLAUDE.md" 这一步改写为"更新 AGENTS.md + Development_Process/WORKFLOW.md" —— Stage 0 启动时需明确标注这一改动，避免它成为对 master prompt 字面要求的一次静默偏离。
 
-## D-002: All engineering docs/memory consolidated under `Development_Process/`; migration artifacts relocated off the master prompt's literal path (2026-07-22, accepted)
-- Context: User directive: `原网站代码asinseed/` is read-only reference (never edit); `prd-docs/SDD.md` is the primary build reference, `prd-docs/PRD.md` is for acceptance/cross-check; `new_asinseed/` is the workspace; a single `Development_Process/` folder inside it must unify history, feature/field/user-flow/page mapping relationships, and project working memory — nothing scattered across a bare `docs/`. The master prompt (§2.2, §5.6) separately specifies literal artifact paths `migration/<page>/inventory.md`, `migration/report-<batch>.md`, `migration/STATE.md`.
-- Decision: Moved former `docs/{ARCHITECTURE,DECISIONS,STATE,WORKFLOW}.md` into `Development_Process/`. Added `Development_Process/HISTORY.md` (append-only session log, distinct from the mutable `STATE.md`), `Development_Process/mappings/{page,field,feature,user-flow}-map.md` (cross-page roll-up tables, old↔new), and `Development_Process/migration/{inventory,reports}/` (per-page/per-batch detail — the master prompt's P1/P4 artifacts, relocated here instead of a bare root `migration/`). `Development_Process/specs/` replaces a root-level `specs/` for the generic non-migration spec-gate flow. The master prompt's `migration/STATE.md` checkpoint is treated as this same `Development_Process/STATE.md` — not a second state file.
-- Alternatives rejected: Keep `docs/` and add a separate root `migration/` + `specs/` per the master prompt's literal paths — rejected, produces 3+ scattered top-level locations for what the user explicitly wants as one unified home, and risks two divergent "current state" files (`docs/STATE.md` vs `migration/STATE.md`).
-- Consequences: Any skill/script that reads or writes `migration/STATE.md`, `migration/<page>/inventory.md`, or `migration/report-<batch>.md` per the master prompt's literal text must be pointed at `Development_Process/STATE.md` / `Development_Process/migration/inventory/<page>/` / `Development_Process/migration/reports/` instead — this must be called out explicitly the first time Stage 0 builds `scripts/migration/` or `.claude/skills/migration-state-checkpoint`, so it isn't a silent deviation.
+## D-002: 全部工程文档/记忆统一收进 `Development_Process/`；迁移产物迁出 master prompt 字面指定的路径 (2026-07-22, accepted)
+- 背景：用户指示：`原网站代码asinseed/` 是只读参考（禁止编辑）；`prd-docs/SDD.md` 是主要实现依据，`prd-docs/PRD.md` 用于验收/对照；`new_asinseed/` 是工作区；其内部要有一个统一的 `Development_Process/` 文件夹，统管历史记录、功能/字段/用户流程/页面映射关系与项目工作记忆 —— 不再散落在一个裸的 `docs/` 里。master prompt（§2.2、§5.6）另行规定了字面产物路径 `migration/<page>/inventory.md`、`migration/report-<batch>.md`、`migration/STATE.md`。
+- 决策：把原来的 `docs/{ARCHITECTURE,DECISIONS,STATE,WORKFLOW}.md` 移入 `Development_Process/`。新增 `Development_Process/HISTORY.md`（追加式会话日志，区别于可变的 `STATE.md`）、`Development_Process/mappings/{page,field,feature,user-flow}-map.md`（跨页汇总表，新旧对照）、`Development_Process/migration/{inventory,reports}/`（逐页/逐批次细节 —— master prompt 的 P1/P4 产物，迁到此处而非裸的根目录 `migration/`）。`Development_Process/specs/` 取代根目录级的 `specs/`，承载通用非迁移 spec 闸门流程。master prompt 的 `migration/STATE.md` 检查点被视为等同于本仓库的 `Development_Process/STATE.md` —— 不是第二份状态文件。
+- 被拒绝的备选方案：保留 `docs/`，另外按 master prompt 字面路径新增根目录 `migration/` + `specs/` —— 被拒绝，会产生 3 个以上散落的顶层位置，而用户明确想要一个统一的家；且会产生两份可能互相矛盾的"当前状态"文件（`docs/STATE.md` 对 `migration/STATE.md`）。
+- 后果：任何按 master prompt 字面文本读写 `migration/STATE.md`、`migration/<page>/inventory.md` 或 `migration/report-<batch>.md` 的 skill/脚本，都必须改指向 `Development_Process/STATE.md` / `Development_Process/migration/inventory/<page>/` / `Development_Process/migration/reports/` —— Stage 0 第一次搭建 `scripts/migration/` 或 `.claude/skills/migration-state-checkpoint` 时必须明确指出这一点，避免它成为一次静默偏离。
 
-## D-003: Handoff target host resolved to `sellersprite.ai` (2026-07-22, accepted)
-- Context: PRD §0.3 `TBD-SELLERSPRITE-HOST` flagged a conflict between the live JSP CTA (`sellersprite.com`, `search.jsp`) and the master prompt's assumed allowlist (`sellersprite.ai`). Neither PRD nor SDD nor `ARCHITECTURE.md` could resolve this by inference per standing policy — required an explicit business decision.
-- Decision: User confirmed the target host is `sellersprite.ai`. `sellersprite.com` is legacy and not carried into the new site's handoff-registry allowlist.
-- Alternatives rejected: Keep the placeholder-domain-plus-TODO approach until a separate written sign-off — rejected, the user gave the decision directly in this session, no need to keep it open.
-- Consequences: `PRD.md` §0.2/§0.3/§11, `SDD.md` §5.4/§9.2/§17, and `ARCHITECTURE.md` (data-flow + Open questions) all updated to state `sellersprite.ai` directly, no more TBD placeholder language. Any future change to this host still requires ask-first per `AGENTS.md` § Boundaries.
+## D-003: Handoff 目标域名确定为 `sellersprite.ai` (2026-07-22, accepted)
+- 背景：PRD §0.3 的 `TBD-SELLERSPRITE-HOST` 标出了一处冲突：线上 JSP 的 CTA（`sellersprite.com`，`search.jsp`）与 master prompt 假定的白名单（`sellersprite.ai`）不一致。按既定政策，PRD、SDD、`ARCHITECTURE.md` 均不能凭推断解决此问题 —— 需要一次明确的业务决策。
+- 决策：用户确认目标域名为 `sellersprite.ai`。`sellersprite.com` 是旧站遗留域名，不带入新站 handoff-registry 白名单。
+- 被拒绝的备选方案：先用占位域名+TODO，等待单独的书面签字确认 —— 被拒绝，用户本次会话中已直接给出决策，无需再拖延。
+- 后果：`PRD.md` §0.2/§0.3/§11、`SDD.md` §5.4/§9.2/§17、`ARCHITECTURE.md`（数据流 + 未决问题）均已更新为直接写明 `sellersprite.ai`，不再有 TBD 占位语言。未来若要再变更此域名，仍需按 `AGENTS.md` § Boundaries 先问过用户。
 
-## D-004: Content automation workflow elevated from placeholder to active build, running in parallel with the migration pilot (2026-07-22, accepted)
-- Context: PRD v0.2.0 explicitly scoped blog/article automation out of this phase (schema skeleton + placeholder skill only, §0.2 point 5 / §2.3 non-goal 4). User decided to bring it forward: build the real production→review→scheduled-publish pipeline now, using Sanity's own capabilities as much as possible, without waiting for the migration pilot (track A) to finish first — the two tracks (ADR-003) already have independent timing/permissions, so nothing structurally blocks running them concurrently.
-- Decision: Content Agent (track B) is now an active work item. Pipeline: keyword library (`KeywordEntry`) → material library (`MaterialAsset`) → Content Agent writes `ContentEntry` with `workflowState: draft` → human moves it through `in_review` → `approved` in Studio → human schedules a Sanity **Content Release** for the approved doc → Sanity mechanically publishes at the scheduled time. E-E-A-T fields (`author`/`sourceCitations`/`methodology`) stay optional, not made mandatory for agent-generated content (explicit user call — validate the pipeline first, tighten later if needed). No third-party workflow plugin (see D-004's companion ADR-005 in `SDD.md` §16) — native Content Releases + a custom `workflowState` field is enough for this pipeline's actual needs.
-- Alternatives rejected: (a) Wait for Stage 0-1 pilot to pass before starting track B — rejected, the tracks are already independent by design (ADR-003), no reason to serialize them. (b) Install `sanity-plugin-workflow` or similar for a richer Kanban review UI — rejected as over-engineering for the team size and actual requirement (see ADR-005). (c) Make E-E-A-T fields mandatory for agent-generated content — rejected per explicit user instruction, revisit only if quality issues surface later.
-- Consequences: `PRD.md` §0.2/§2.3/§4.2/§6.3/§8/§9/§12 and `SDD.md` §10/§11/§12/§15/§16 rewritten accordingly (see PRD/SDD v0.3.0). `STATE.md` Now/Next updated to reflect two parallel fronts. Any implementation must enforce that agent-writable Sanity roles cannot move `workflowState` to `approved` or create/modify a Content Release — this is a testable Gate (SDD §12), not a convention to be trusted.
+## D-004: 内容自动化工作流从占位提升为主动建设，与迁移试点并行推进 (2026-07-22, accepted)
+- 背景：PRD v0.2.0 明确把博客/文章自动化排除在本阶段之外（只有 schema 骨架 + 占位 skill，见 §0.2 第 5 点 / §2.3 非目标 4）。用户决定把它提前：现在就搭建真实的"生产 → 评审 → 定时发布"流水线，尽量利用 Sanity 自身能力，不必等迁移试点（轨A）先完成 —— 两条轨道（ADR-003）本就在时序/权限上相互独立，结构上没有任何东西阻止它们并行推进。
+- 决策：Content Agent（轨B）现在是一个主动的工作项。流水线：关键词库（`KeywordEntry`）→ 素材库（`MaterialAsset`）→ Content Agent 写入 `ContentEntry`，`workflowState: draft` → 人工在 Studio 中把它推进 `in_review` → `approved` → 人工为已批准的文档设定 Sanity **Content Release** 定时 → Sanity 到点机械发布。E-E-A-T 字段（`author`/`sourceCitations`/`methodology`）保持可选，不对 agent 生成内容强制要求（用户明确要求 —— 先验证流水线，后续需要再收紧）。不引入第三方 workflow 插件（见 D-004 的配套 ADR-005，位于 `SDD.md` §16）—— 原生 Content Releases + 自定义 `workflowState` 字段已足够满足这条流水线的实际需求。
+- 被拒绝的备选方案：(a) 等 Stage 0-1 试点通过后再启动轨B —— 被拒绝，两条轨道按设计本就独立（ADR-003），没有理由串行化。(b) 安装 `sanity-plugin-workflow` 等插件以获得更丰富的看板评审界面 —— 因团队规模和实际需求而被判定为过度设计（见 ADR-005），被拒绝。(c) 对 agent 生成内容强制要求 E-E-A-T 字段 —— 按用户明确指示被拒绝，只有日后出现质量问题才重新考虑。
+- 后果：`PRD.md` §0.2/§2.3/§4.2/§6.3/§8/§9/§12 与 `SDD.md` §10/§11/§12/§15/§16 已相应改写（见 PRD/SDD v0.3.0）。`STATE.md` 的 现状/下一步 已更新以反映两条并行战线。任何实现都必须确保 agent 可写的 Sanity 角色不能把 `workflowState` 推进到 `approved`，也不能创建/修改 Content Release —— 这是一个可测试的 Gate（SDD §12），不是一条要靠信任遵守的约定。
+
+## D-005: 在当前个人 agent-loop 探索阶段采用轻量/按需流程 (2026-07-23, accepted)
+- 背景：在任何真实迁移工作发生之前，Stage 0 就已经在堆积团队规模的治理成本 —— 14 个预先写好的 `.claude/skills/*`（在任何模式实际重复出现之前）、几乎 1:1 重复 `STATE.md` 自身"近期变更记录"叙事的 `HISTORY.md`、为受审计团队流程设计的三闸门 spec/plan/tasks 仪式、以及一条尚未验证 Stage 0 的轨A 旁边完全并行运行的轨B。用户指出这对项目实际所处的阶段而言过重了：这是一个人在探索 agent-loop 工作流，不是一个团队在审计下执行高风险迁移。
+- 决策：(a) 停止预先编写 skills —— 保留 `jsp-page-inventory`（已建成，Stage 1 第一步立刻需要），原计划的其余 13 个延后，只有当 Stage 1 实际手工重复出现某个模式时才按需现写。(b) 轨B（Content Agent）暂停 —— 其 schema（`contentEntry`/`keywordEntry`/`materialAsset`）作为有效的前期铺垫保留，但 workflowState actions、Content Releases 接线以及任何主动流水线工作，要等轨A 的 Stage 1 试点（`index.jsp` + `search.jsp`）通过验收后才开始。(c) `HISTORY.md` 退役，并入 `STATE.md` 的"近期变更记录"小节 —— 用一份文件同时承载可变的当前状态和追加式日志，而不是两份内容近乎重复的文件。(d) `WORKFLOW.md` §3 的通用 spec/plan/tasks 流程从三闸门仪式精简为一句话指引；只有当项目变成一个审计追溯比迭代速度更重要的多人项目时，才恢复完整的正式闸门（EARS 验收标准、逐任务覆盖检查）。(e) 放弃独立的 `migration/pilot-plan.md` 交付物 —— Stage 1 范围写在 `STATE.md` § 下一步 的几行字里，不再单独立一个文件。
+- 被拒绝的备选方案：保留 Stage 0 原计划的全部治理面、只是执行得更快 —— 被拒绝，问题在于仪式本身（而非节奏）与阶段不匹配；更快地走完不必要的流程并不能修正"为尚不存在的问题预先建设"这件事。直接删掉轨B 已建好的 schema —— 被拒绝，它们是低成本、正确的前期铺垫；为了"简化"而删掉能用的代码只是流程表演，不是真正的简化。
+- 后果：`AGENTS.md`、`WORKFLOW.md`、`ARCHITECTURE.md` 已更新，不再把那 13 个未建的 skills 或轨B 描述为"当前活跃"，也去掉了对 `HISTORY.md` 的引用。这是一条长期默认策略，不是一次性清理：一旦某项被延后的治理（某个具名 skill、轨B 的主动建设、正式 spec 闸门）的实际触发条件出现，就立刻重新引入它，而不是提前引入。
+
+## D-006: 权限管控收敛为风险边界一句话规则 (2026-07-23, accepted)
+- 背景：旧规则把生产发布、真实支付等高风险操作，与新增依赖、本地 schema 源码和可恢复删除等低风险操作并列为 Ask First，且在 `AGENTS.md`、主提示词和流程说明中重复列举，增加了单人探索期的 Agent 停顿和上下文负担。
+- 决策：采用唯一规则：**本地可逆改动默认执行；涉及生产内容、真实用户/支付/旧后端、线上 URL/流量或不可恢复删除时必须先获人工批准。** 具体高风险范围只在 `AGENTS.md` § Boundaries 展开；主提示词只保留该句和试点未绿不得扩批。
+- 被拒绝的备选方案：保留逐项 Ask First 清单 —— 被拒绝，低风险本地工作频繁被阻断，且同一规则多处复制容易漂移。
+- 后果：新增依赖、本地 schema 源码、Mock、草稿工件、测试和可恢复的仓库内删除默认执行并在结果中汇报；生产 Sanity、真实业务系统、线上 SEO 流量与不可恢复外部删除继续保持 HITL。
