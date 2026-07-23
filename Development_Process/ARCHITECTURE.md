@@ -39,6 +39,6 @@ Real legacy backend is a future replacement target for `packages/mock-adapters`,
 
 These are carried from `../../prd-docs/PRD.md` §0.3 — do not resolve them by inference:
 
-- **Handoff target domain**: PRD §0.3/§11 list this as unresolved (`.com` vs `.ai`, pending written business confirmation). The master prompt (§3, §6) asserts it's already confirmed as `sellersprite.ai`. **These two source documents disagree** — flagged here rather than silently picking one; resolve with the business owner before `handoff-registry` is built in Stage 0.
+- ~~Handoff target domain~~ — **resolved 2026-07-22**: `sellersprite.ai` (business confirmation; see `DECISIONS.md` D-003). The legacy `sellersprite.com` link in `search.jsp` is not migrated.
 - `seo/hot/*` programmatic pages: inclusion/merge strategy pending content-quality review (PRD `TBD-SEO-programmatic`).
 - Mock → real backend cutover timing: pending business confirmation or an approved `legacy-contract-report.md` (PRD `TBD-REAL-BACKEND-CUTOVER`).

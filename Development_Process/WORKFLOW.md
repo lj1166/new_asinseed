@@ -1,8 +1,8 @@
 # Workflow
 
-This repo runs two workflows side by side. Which one applies is decided by task type, not by preference — see `AGENTS.md` § Workflow for the one-line rule.
+This repo runs three workflows side by side. Which one applies is decided by task type, not by preference — see `AGENTS.md` § Workflow for the one-line rule.
 
-## 1. Migration Loop (JSP migration work)
+## 1. Migration Loop (JSP migration work, track A)
 
 Authoritative, complete definition: `../../prd-docs/prompts/00_migration_loop_master_prompt.txt`. This file does not duplicate it — only indexes the shape so an agent knows where to look:
 
@@ -17,9 +17,18 @@ Authoritative, complete definition: `../../prd-docs/prompts/00_migration_loop_ma
 
 Any JSP-migration task — inventory, schema drafting, page import, batch verification — follows this file, not the generic spec/plan/tasks flow below. Working artifacts (P1 per-page inventory, P4 batch reports, cross-page roll-up maps) live under `migration/` and `mappings/` in this same folder — see `README.md` for the exact layout and `DECISIONS.md` D-002 for why these were relocated off the master prompt's literal `migration/...` path.
 
-## 2. Generic spec flow (non-migration new features)
+## 2. Content Agent (blog/article automation, track B)
 
-For work that isn't sourced from a JSP page — new capabilities added after migration, or infrastructure unrelated to the migration batches. Lives in `Development_Process/specs/NNN-<kebab-name>/` (created lazily; doesn't exist yet — first feature creates `specs/001-<name>/`).
+Authoritative definition: `../../prd-docs/PRD.md` §8/§9, `../../prd-docs/SDD.md` §10/§11/§12/ADR-005. This file does not duplicate it — only indexes the shape:
+
+- Pipeline: `KeywordEntry` (selection input) → `MaterialAsset` (raw material) → Content Agent writes `ContentEntry` with `workflowState: draft`, `generatedBy: 'agent'` → human moves it `draft → in_review → approved` in Studio → human schedules a Sanity **Content Release** on the `approved` doc → Sanity mechanically publishes at the scheduled time (or human publishes directly, as an alternative to scheduling).
+- Hard rule (technically enforced, not conventional): the Content Agent's Sanity write identity can never move `workflowState` to `approved`, and can never create/modify a Content Release. Any implementation that lets an agent auto-advance state or auto-publish is a HITL violation — see `SDD.md` §12 for the required automated Gate.
+- Runs fully in parallel with track A (ADR-003) — starting/advancing track B never waits on track A's Stage 0/1/2/3 gates, and vice versa.
+- This track does **not** go through the spec/plan/tasks gates below (§3) — its process is already fully specified in PRD §8/SDD §11, not something to re-derive per change. Small fixes to the pipeline itself (≤ ~2 files) skip straight to implementation per the proportionality rule at the bottom of this file; anything larger updates PRD/SDD directly and logs a `DECISIONS.md` entry if it changes the pipeline's shape.
+
+## 3. Generic spec flow (work that is neither track A nor track B)
+
+For new capabilities that aren't sourced from a JSP page and aren't blog/content-automation work — e.g. new site infrastructure, tooling, or a feature with no JSP/content-pipeline precedent. Lives in `Development_Process/specs/NNN-<kebab-name>/` (created lazily; doesn't exist yet — first feature creates `specs/001-<name>/`).
 
 ### Gate rules (both gates require explicit approval after the artifact is shown; feedback is amended in place, not regenerated)
 
