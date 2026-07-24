@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="80px" height="80px" viewBox="0 0 80 80" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48.2 (47327) - http://www.bohemiancoding.com/sketch -->
+    <title>icon-data</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Artboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-405.000000, -811.000000)">
+        <g id="icon-data" transform="translate(405.000000, 811.000000)">
+            <rect id="Rectangle" fill="#FFFFFF" x="0" y="0" width="80" height="80"></rect>
+            <g transform="translate(8.000000, 10.000000)">
+                <rect id="Rectangle-15" fill="#FFB956" x="28.6896552" y="36.4137931" width="7.09359606" height="21.3333333"></rect>
+                <rect id="Rectangle-16" fill="#FF9200" x="16.5517241" y="56.2758621" width="30.7389163" height="7.11111111" rx="1.77777778"></rect>
+                <rect id="Rectangle-14" fill="#FF9200" x="0" y="0" width="64" height="41.9310345" rx="5.24507486"></rect>
+                <path d="M15.4482759,24.1532567 L20.1773399,24.1532567 L20.1773399,31.2643678 L15.4482759,31.2643678 L15.4482759,24.1532567 Z M24.8275862,19.412516 L29.5566502,19.412516 L29.5566502,31.2643678 L24.8275862,31.2643678 L24.8275862,19.412516 Z M34.2068966,9.93103448 L38.9359606,9.93103448 L38.9359606,31.2643678 L34.2068966,31.2643678 L34.2068966,9.93103448 Z M43.5862069,14.6717752 L48.3152709,14.6717752 L48.3152709,31.2643678 L43.5862069,31.2643678 L43.5862069,14.6717752 Z" id="Combined-Shape" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>

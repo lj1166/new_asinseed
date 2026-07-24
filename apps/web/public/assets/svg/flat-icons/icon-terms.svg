@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="80px" height="80px" viewBox="0 0 80 80" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48.2 (47327) - http://www.bohemiancoding.com/sketch -->
+    <title>icon-search-terms</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <ellipse id="path-1" cx="29.1294643" cy="29.0322581" rx="29.1294643" ry="29.0322581"></ellipse>
+    </defs>
+    <g id="Artboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-268.000000, -811.000000)">
+        <g id="icon-search-terms" transform="translate(268.000000, 811.000000)">
+            <rect id="Rectangle" fill="#FFFFFF" x="0" y="0" width="80" height="80"></rect>
+            <g id="icon-terms" transform="translate(3.000000, 6.000000)">
+                <rect id="Rectangle-12" fill="#FFB956" transform="translate(55.487975, 53.820067) rotate(-45.000000) translate(-55.487975, -53.820067) " x="52.0192246" y="41.0458739" width="6.9375" height="25.5483871"></rect>
+                <rect id="Rectangle-13" fill="#FF9200" transform="translate(63.294350, 61.336715) rotate(-45.000000) translate(-63.294350, -61.336715) " x="57.5131002" y="53.207683" width="11.5625" height="16.2580645" rx="5.78125"></rect>
+                <g id="火-(1)-+-Fill-1-Mask" transform="translate(0.670879, 0.000000)">
+                    <mask id="mask-2" fill="white">
+                        <use xlink:href="#path-1"></use>
+                    </mask>
+                    <use id="Mask" fill="#FFFFFF" xlink:href="#path-1"></use>
+                    <path d="M28.2062845,11.7046126 C29.3867675,13.7346952 30.1184269,16.4629608 30.1184269,19.4880471 C30.1184269,25.7296842 27.0318296,30.796565 23.2197086,30.796565 C20.250067,30.796565 17.7414128,27.7018692 16.7637858,23.3855185 C13.3145343,27.9984353 10.40625,33.4607715 10.40625,38.8648028 C10.40625,46.9042191 17.9075082,53.4193548 27.1609491,53.4193548 C36.4146053,53.4193548 43.9158635,46.9042191 43.9158635,38.8648028 C43.9158635,24.2696664 28.821042,12.193356 28.2062845,11.7046126 Z M27.296312,49.9408136 C21.6519208,49.9408136 19.967285,45.8048265 20.2561489,44.1351655 C20.834092,40.8135639 24.3018583,40.2667193 26.9273606,40.2667193 C33.1619126,40.2667193 35.6705129,34.1239206 35.8244445,32.5358356 C35.8244445,32.5358356 38.0685624,49.9408136 27.296312,49.9408136 Z" id="火-(1)" fill="#FFB956" mask="url(#mask-2)"></path>
+                </g>
+                <ellipse id="Oval-5" stroke="#FF9200" stroke-width="6.97766749" cx="30.0625" cy="29.0322581" rx="25.4174163" ry="25.5434243"></ellipse>
+            </g>
+        </g>
+    </g>
+</svg>
