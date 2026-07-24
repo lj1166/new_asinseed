@@ -40,7 +40,7 @@ Never：push/publish/force ops；编辑 `../原网站代码asinseed/` 下任何�
 4. 小改动（≤ 2 文件，不涉及 schema/API/permission）跳过 spec 流程，三条线都适用。
 5. 提交前缀：迁移 `feat(migration-<page>): P<n> <summary>`；内容自动化 `feat(content-agent): <summary>`；spec 流程 `feat(NNN-<name>): <summary>`。
 6. 架构性选择先查 `Development_Process/DECISIONS.md`，决定后追加记录；模块总览见 `Development_Process/ARCHITECTURE.md`。
-7. 工程配重（skills / 流程闸门 / 并行轨道）按实际反复出现的需求增长，不预先搭建；这是当前阶段的默认做法，不是一次性清理，具体见 `Development_Process/DECISIONS.md` D-005。
+7. 工程配重（skills / 流程闸门 / 并行轨道）按实际反复出现的需求增长，不预先搭建；这是当前阶段的默认做法，不是一次性清理，具体见 `Development_Process/DECISIONS.md` D-005。新建 skill 走审批闸门：agent 不得自行创建新 skill；仅当判断某模式已具备封装价值时，先向我说明必要性与价值权重，经我审核批准后才能创建 `.claude/skills/*`。
 
 ## Session protocol
 开始：读 `Development_Process/STATE.md`（含 § 近期变更记录 近期记录）+ 最近 git log。
