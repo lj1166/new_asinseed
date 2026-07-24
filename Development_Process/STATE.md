@@ -7,21 +7,26 @@ Stage 0 脚手架已完成：根目录 pnpm 工具链、`packages/contracts`（Z
 
 **工作流位置**：本项目当前没有任何处于进行中的新功能 spec —— Stage 0 脚手架、D-005/D-006 决策落地、`Development_Process/` 中文化均按 `WORKFLOW.md` §3 的轻量直接执行路径完成，未创建 `specs/NNN-*/` 目录。若套用轻量项目的状态字符串：`SPEC.md — 不适用（本轮工作未走 spec 流程，直接执行）`。
 
-**提交状态（本次会话结束时）**：仓库历史上已有 3 个 commit（`9106909` 建库+`Development_Process/` 骨架、`8932992` 澄清 HITL 批次粒度、`8f22fdc` 确定 Handoff 域名+激活轨B）。在这 3 个 commit 之后新产生的工作 —— Stage 0 脚手架代码、D-005/D-006 决策与 `AGENTS.md`/`Development_Process/` 相应改动、本次中文化翻译 —— 已在本次收尾时提交（见下方"近期变更记录"的对应条目取得的 commit hash；若下面仍写着"尚未提交"字样，说明提交步骤因预算未执行，以工作树实际 `git status` 为准）。
+**提交状态**：git 历史上已有 6 个 commit（`9106909`→`8f22fdc`→`132f121`→`71fe4c1`→`6b1b486`，均已核实落地），工作树干净。
 
 ## 下一步
-**立即行动**：确认上一步的收尾提交（脚手架 1 个 commit + 文档/决策 1 个 commit + 本状态文档 1 个 `chore(handoff)` 收尾 commit）已经落地；如果因为预算耗尽而未执行，先跑：
-```
-git add <脚手架文件与被替换的 .gitkeep> && git commit -m "feat(scaffold): ..."
-git add AGENTS.md Development_Process/ .claude/skills/jsp-page-inventory/SKILL.md && git commit -m "docs: ..."
-```
-（具体文件清单见本文件旧版 diff 或直接跑 `git status --porcelain=v1 -uall`。）
+**立即行动（新会话直接开始）**：对 `index.jsp` 跑 P1——用 `jsp-page-inventory` skill，`cn/__frontend/index.jsp` + `en/__frontend/index.jsp` 两个 locale 都要看，产出 `Development_Process/migration/inventory/index/inventory.md`；然后对 `search.jsp`/`search_keywords.jsp` 跑同样的 P1（两者判定为待合并，见 master-prompt §3，不得并列迁移成两条可索引 URL）。两页 P1 都完成后再进 P2（contracts 已有基座，见下）→ P3 → P4。
 
-**轨A —— Migration Loop（目前唯一在推进的战线）：**
-- Stage 1 试点：`index.jsp`（首页）+ `search.jsp`/`search_keywords.jsp` 合并为一个结果路由（依据 master-prompt §7 / SDD §13 的 URL 表）。先对两个页面跑 P1（用 `jsp-page-inventory` skill）→ `migration/inventory/<page>/inventory.md` → P2（contracts 已大体就位，按需扩展）→ P3（实现）→ P4（10 项统一验收器）。
-- 只有当 Stage 1 实际手工重复出现某个模式时，才新写一个 `.claude/skills/*` skill —— 不做预先设想。
-- 验证状态（2026-07-23）：`pnpm install` ✓（已是最新）、`pnpm typecheck` ✓（4 个 workspace 包全部通过，此前修复了 Git Bash/Windows 会话里本地环境 `pnpm` 未加入 PATH 的问题）、`pnpm test` ✓（vitest 4/4 通过）。`pnpm test:e2e`（Playwright）目前仅卡在首次运行的基础设施步骤 —— 该环境尚未下载 chromium 浏览器二进制文件，非代码缺陷。跑一次 `pnpm exec playwright install chromium`，再重跑 `pnpm test:e2e` 即可解决。本次会话（纯文档翻译）未重跑这些 gate，因为改动不涉及代码——沿用 2026-07-23 的验证结果。
-- Stage 1 通过验证后：重新评估是否恢复轨B（见 D-005），以及 Stage 2 分批是否需要新增 skills。
+前置条件已核实就绪（2026-07-23 复核，非假设）：
+- 目标 JSP 源文件确认存在：`cn/__frontend/{index,search,search_keywords}.jsp` + 对应 `en/` 镜像。
+- P1 工具：`.claude/skills/jsp-page-inventory` 已建成。
+- P2 契约基座已有：`packages/contracts/src/{index-decision,content,handoff,reverse-asin}.ts`，按页扩展字段即可，非从零写。
+- P3 实现基座已有：`apps/web/app/[locale]/page.tsx` 占位、shadcn/ui 已配置（`components.json`）、`globals.css` 里有旧站主题草案 token（文件内注释明确标注为估算值——对照真实页面精修正是 Stage 1 该做的事，不是阻塞项）。
+- Mock 数据层已有：`packages/mock-adapters` 的 reverse-asin/identity/entitlement。
+- 工具链验证仍然有效（2026-07-23）：`pnpm install` ✓、`pnpm typecheck` ✓（4 个 workspace 包全过）、`pnpm test` ✓（vitest 4/4）。
+
+**e2e 测试（Playwright）本次决定暂缓**：用户明确"暂时不用，之后再说"。`pnpm test:e2e` 目前卡在 chromium 浏览器二进制未下载这一步，不作为 Stage 1 P1-P3 的阻塞项；只有真正推进到 P4 验收且验收器需要跑 e2e 时，才决定是否补跑 `pnpm exec playwright install chromium`。
+
+**已识别但暂不动手的点（Stage 1 试点跑完一次之后再评估，按 D-005 不预先动）：**
+- `jsp-page-inventory` SKILL.md 可能的冗余：Scope 表 "Controller evidence" 字段与 Route 表逐行证据重复；"Index Candidate" 章节对明显可/不可索引的页面读起来像仪式；"Confidence" 字段目前没有下游消费者。先跑一遍试点再判断是否精简。
+- 不要主动新建 Next.js 页面创作 skill、SEO 打分 skill 或迁移完整性校验 skill——后两者与主提示词 P4 十项统一验收器功能重叠；除非试点验收后发现验收器本身不够用，否则不建（且任何新 skill 都要先过 `AGENTS.md` §Workflow 第7条的必要性/价值权重说明 + 用户批准闸门）。
+
+Stage 1 通过验证后：重新评估是否恢复轨B（见 D-005），以及 Stage 2 分批是否需要新增 skills。
 
 **轨B —— Content Agent：暂停中（见 `DECISIONS.md` D-005）。** Schema 已存在（`apps/studio/schemaTypes/{contentEntry,keywordEntry,materialAsset}.ts`），作为有效的前期铺垫；`workflowState` actions 与 Content Releases 接线尚未开始。待轨A Stage 1 试点通过后再恢复。
 
@@ -31,6 +36,7 @@ git add AGENTS.md Development_Process/ .claude/skills/jsp-page-inventory/SKILL.m
 ## 近期变更记录
 自此处向下为追加式记录 —— 最新的在最上面，只追加、不改写历史。本节现在也承担了原来 `HISTORY.md` 的职能（见 `DECISIONS.md` D-005 —— `HISTORY.md` 已退役）。归档触发条件：一旦此列表超过约 15 条或跨度超过约 2 个月，就把最近 5 条之外的所有条目拆分进独立的归档/`HISTORY.md` 文件，此处只留一行指针 —— 不要让它无限增长。
 
+- 2026-07-23：为下一个全新会话（Stage 1 试点：`index.jsp` + `search.jsp`/`search_keywords.jsp`）做交接准备 —— (a) `AGENTS.md` §Workflow 第7条新增 skill 创建审批闸门：agent 不得自行新建 skill，判断某模式值得封装时须先向用户说明必要性与价值权重，经批准后才能创建 `.claude/skills/*`；(b) 复核确认 Stage 1 前置条件均就绪（git log 6 个既有 commit 均已落地、两个 locale 的目标 JSP 源文件路径核实存在、`packages/contracts`/`packages/mock-adapters`/`apps/web` 脚手架核实到位、工具链验证仍有效）；(c) 用户决定暂缓 `pnpm test:e2e`（Playwright），非本阶段必要项，留到真正推进到 P4 需要时再补装 chromium；(d) 记录了 `jsp-page-inventory` SKILL.md 的三处潜在冗余（Controller evidence 重复、Index Candidate 仪式感、未消费的 Confidence 字段）与"暂不新建"的三个候选 skill（Next.js 页面创作、SEO 打分、迁移完整性校验——后两者与 P4 十项验收器重叠），留待试点跑完一次后评估，本次不改动。
 - 2026-07-23：会话交接（handoff）——把 Stage 0 脚手架代码、D-005/D-006 决策落地改动、`Development_Process/` 中文化翻译，从"3 个既有 commit 之后一直未提交"的状态收尾提交（commit 拆分：脚手架一个、文档/决策一个、本状态文档收尾一个 `chore(handoff)`）。补正了此前 现状 中"尚未提交任何 commit"的表述错误——仓库实际已有 3 个更早的 commit（建库/HITL 澄清/Handoff 域名+轨B），此前的说法把"这批新工作未提交"误写成了"仓库从无提交"。本轮未产生新的架构决策、新的助手记忆缺口——D-006 已在会话过程中（用户/linter）落地并与本文档表述一致，无需额外补写。
 - 2026-07-23：权限策略收敛（`DECISIONS.md` D-006）：本地可逆改动默认执行；仅生产内容、真实用户/支付/旧后端、线上 URL/流量或不可恢复删除需人工批准。同步压缩 `AGENTS.md` 与迁移主提示词，并修正 Stage 1 P1 inventory 的标准产物路径。
 - 2026-07-23：文档系统中文化 —— 把 `Development_Process/` 下 5 个核心文档（`STATE.md`、`ARCHITECTURE.md`、`DECISIONS.md`、`WORKFLOW.md`、`README.md`）与 4 个空骨架映射表（`mappings/*.md`）整篇译成中文，正文与小标题均译，专业术语/文件路径/编号（D-XXX、ADR-XXX、Stage/P1-P4 等）保留英文；同步修正 `AGENTS.md` 中两处逐字引用旧英文小标题的地方（改指向"现状/下一步/阻塞项/近期变更记录"），并在其 `## Conventions` 追加一句中文文档撰写约定。`.claude/skills/jsp-page-inventory/SKILL.md` 核实已提前是中文，未改动。`prd-docs/`、`CLAUDE.md`、代码文件、测试产物均未改动（本就无需改动或明确排除在外）。
