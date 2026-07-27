@@ -59,8 +59,8 @@ description: 在迁移任一旧 JSP 页面前的 P1 阶段使用。只读扫描 
 |---|---|---|---|---|---|
 
 ## Index Candidate
-| Candidate | Reason | P2 action |
-|---|---|---|
+| Candidate | Reason | P2 action | 信息架构建议（照搬 / 调整，理由） |
+|---|---|---|---|
 
 ## Risks And Blockers
 - <TBD-SEO / UNRESOLVED / duplication / permission risk>
@@ -74,6 +74,8 @@ description: 在迁移任一旧 JSP 页面前的 P1 阶段使用。只读扫描 
 ```
 
 `Index Candidate` 只记录 P1 建议；最终 `IndexDecision` 在 P2 由服务端规则确定。查询结果、账号、支付和后台页面不得在 P1 标记为可收录。
+
+"信息架构建议（照搬 / 调整，理由）"列（2026-07-26 新增，响应 `report-agent-system-gaps.md` §四提案②）：每一行必须显式二选一填写"照搬"或"调整"，并附一句理由——禁止留空或用"同旧站"默认带过。目的是强制在 P1 阶段就回答"这个候选项的结构/位置是否该重排"，而不是隐式地把旧站结构当成默认正确答案（参见该报告 §3.3 对 `url-map.md` 三条"照搬旧站"决策的分析）。"照搬"同样需要给出理由（例如"旧站顺序已符合当前信息架构目标，无需调整"），不能因为判断是"照搬"就省略说明。
 
 ## 完成条件
 

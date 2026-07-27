@@ -1,12 +1,12 @@
 # ASINSeed 重构（新站）
 
-把旧站 `原网站代码asinseed`（JSP 单体）改造为 Next.js + Sanity + Vercel 的 SEO 前台站点，发现层导流到 SellerSprite（决策层）。当前阶段：Stage 0 脚手架已完成（contracts/mock-adapters/apps 骨架/tests），个人 agent-loop 探索期，工程配重按需增长而非预先搭建（见 `Development_Process/DECISIONS.md` D-005）；尚未开始任何页面迁移（Stage 1 待启动）。
+把旧站 `原网站代码asinseed`（JSP 单体）改造为 Next.js + Sanity + Vercel 的 SEO/GEO 前台站点，发现层导流到 SellerSprite（决策层）。当前阶段：Stage 1 进行中，`index.jsp` 已完成 P1→P4；下一试点为合并处理的 `search.jsp` / `search_keywords.jsp`。进度只以 `Development_Process/STATE.md` 为准；工程配重继续按需增长（`DECISIONS.md` D-005/D-007）。
 
 ## Commands
-`pnpm install`；`pnpm dev`（web）；`pnpm dev:studio`（studio，需先在 `apps/studio/.env.local` 填真实 project id/dataset）；`pnpm build`；`pnpm lint`；`pnpm typecheck`；`pnpm test`（vitest）；`pnpm test:e2e`（playwright）。注：尚未实际跑过 `pnpm install`/dev boot 验证，见 `Development_Process/STATE.md` § Next。
+`pnpm install`；`pnpm dev`（web）；`pnpm dev:studio`（studio，需先在 `apps/studio/.env.local` 填真实 project id/dataset）；`pnpm build`；`pnpm lint`；`pnpm typecheck`；`pnpm test`（vitest）；`pnpm test:e2e`（playwright）。实际命令与本地服务的最近验证结果以 `Development_Process/STATE.md` 为准，不在本文件保留易过期结论。
 
 ## Structure
-- `Development_Process/` — **唯一**的工程文档与项目记忆入口：`STATE.md`（当前状态 + 追加式历史记录，见其 § 近期变更记录）、`ARCHITECTURE.md`、`DECISIONS.md`、`WORKFLOW.md`、`mappings/`（新旧页面/字段/功能/用户流程映射汇总表）、`migration/`（P1 逐页 inventory + P4 批次报告产物）、`specs/`（非迁移新功能的 spec，懒创建）。会话开始必读 `Development_Process/STATE.md`。
+- `Development_Process/` — **唯一**的工程文档与项目记忆入口：`STATE.md`（热快照，当前状态 + 最近五条记录）、`archive/`（冷历史）、`ARCHITECTURE.md`、`DECISIONS.md`、`WORKFLOW.md`、`mappings/`（新旧页面/字段/功能/用户流程映射汇总表）、`migration/`（P1 逐页 inventory + P4 批次报告产物）、`specs/`（非迁移新功能的 spec，懒创建）。会话开始只读 `STATE.md`，按任务再读冷记忆或标准。
 - `apps/web/` — Next.js 前台站点（App Router）
 - `apps/studio/` — Sanity Studio
 - `packages/contracts/` — Zod schema：Reverse ASIN / Handoff / Content 契约
@@ -34,14 +34,21 @@ Never：push/publish/force ops；编辑 `../原网站代码asinseed/` 下任何�
 ## Workflow
 本项目有三条并行但不同性质的工作流，不要混用：
 
-1. **JSP 迁移（Migration Loop，轨A）**：唯一权威流程定义在 `../prd-docs/prompts/00_migration_loop_master_prompt.txt`——P1(发现归类)→P2(契约Schema)→P3(实现导入)→P4(验收放行) 单页节拍，Stage 0(搭loop)→1(试点)→2(分批)→3(放行) 整体节奏，10 项统一验收器。权限边界以本文件 § Boundaries 为准。`Development_Process/WORKFLOW.md` §1 只索引不复制。P1/P4 产物写入 `Development_Process/migration/`，跨页汇总写入 `Development_Process/mappings/`（见 `Development_Process/DECISIONS.md` D-002）。JSP 页面迁移相关工作走这条线。
-2. **内容自动化（Content Agent，轨B，当前暂停）**：关键词库→素材库→agent 写草稿（`workflowState: draft`）→人工审核推进 `in_review`/`approved`→人工设定 Sanity Content Release 定时发布→到点机械发布。权威定义：PRD §8、SDD §10/§11/§12（不是本文件重新展开的地方）。设计上与轨A独立、不互相阻塞（ADR-003，`Development_Process/DECISIONS.md` D-004）；**当前暂停**：schema 已建好，workflowState actions / Content Releases 接线要等轨A Stage 1 试点通过验收后再开始（见 D-005）。不走本条以外的三闸门或迁移循环。agent 写入身份永远没有把状态推进到 `approved` 或创建/改动 Content Release 的权限，这是测试断言的硬 Gate，不是约定。
+1. **JSP 迁移（Migration Loop，轨A）**：唯一权威流程定义在 `../prd-docs/prompts/00_migration_loop_master_prompt.txt`——P1(发现归类)→P2(契约Schema)→P3(实现导入)→P4(验收放行) 单页节拍，Stage 0(搭loop)→1(试点)→2(分批)→3(放行) 整体节奏，以及 Layer A(迁移不变量)/B(技术边界)/C(SEO+GEO 健康审计) 三层验收。权限边界以本文件 § Boundaries 为准。`Development_Process/WORKFLOW.md` §1 只索引不复制。P1/P4 产物写入 `Development_Process/migration/`，跨页汇总写入 `Development_Process/mappings/`（见 `Development_Process/DECISIONS.md` D-002）。JSP 页面迁移相关工作走这条线。
+2. **内容自动化（Content Agent，轨B，当前暂停）**：关键词库→素材库→agent 写草稿（`workflowState: draft`）→人工审核推进 `in_review`/`approved`→人工设定 Sanity Content Release 定时发布→到点机械发布。权威定义：PRD §8、SDD §10/§11/§12（不是本文件重新展开的地方）。架构上与轨A独立；但当前执行暂停：schema 已建好，需先满足轨A Stage 1（首页与合并搜索页均完成 P4）且无未处理的 Layer C SEO/GEO `FAIL`，才可按 `Development_Process/backlog-track-b.md` 开始 workflowState actions / Content Releases 接线（D-005/D-007）。不走本条以外的三闸门或迁移循环。agent 写入身份永远没有把状态推进到 `approved` 或创建/改动 Content Release 的权限，这是测试断言的硬 Gate，不是约定。
 3. **非迁移新功能**（既不属于轨A也不属于轨B的新增能力）：判断走哪条线：源自某 JSP 页面尚未迁移完的内容/字段 → 轨A；博客/文章内容生产相关 → 轨B；其余全新能力（JSP 和内容自动化都没有对应物）→ 走 `Development_Process/WORKFLOW.md` §3 的轻量 spec 流程（当前阶段已简化为「小改动直接改，大改动写个短 spec.md 拿到一句话认可再做」，不是三闸门，见 D-005）。
 4. 小改动（≤ 2 文件，不涉及 schema/API/permission）跳过 spec 流程，三条线都适用。
 5. 提交前缀：迁移 `feat(migration-<page>): P<n> <summary>`；内容自动化 `feat(content-agent): <summary>`；spec 流程 `feat(NNN-<name>): <summary>`。
 6. 架构性选择先查 `Development_Process/DECISIONS.md`，决定后追加记录；模块总览见 `Development_Process/ARCHITECTURE.md`。
 7. 工程配重（skills / 流程闸门 / 并行轨道）按实际反复出现的需求增长，不预先搭建；这是当前阶段的默认做法，不是一次性清理，具体见 `Development_Process/DECISIONS.md` D-005。新建 skill 走审批闸门：agent 不得自行创建新 skill；仅当判断某模式已具备封装价值时，先向我说明必要性与价值权重，经我审核批准后才能创建 `.claude/skills/*`。
 
+## Evidence protocol
+
+- 旧站路由、字段、表单和内容结论必须附旧站源码 `路径:行号`；缺 Controller、include 或数据源时写 `UNRESOLVED`，不从 JSP 外观猜测。
+- 新站实现结论同时区分“源码/配置存在”和“运行时已验证”。后者必须附 HTTP 状态/响应、渲染 DOM、测试输出或可复现的 Studio 操作证据。
+- 截图只证明可见呈现；不能单独证明索引、路由、权限或数据来源。重复性的浏览器验证应写入 Playwright，一次性的人工判断记录在 P4 或审计报告。
+- 不能把模型推断、空查询、未安装 MCP 或不可复现的控制台状态当成永久证据；证据不足时明确下一步获取方式。
+
 ## Session protocol
-开始：读 `Development_Process/STATE.md`（含 § 近期变更记录 近期记录）+ 最近 git log。
-结束（强制）：重写 `Development_Process/STATE.md`（更新 现状/下一步/阻塞项，在 § 近期变更记录 追加一条，只加不改历史）。
+开始：读 `Development_Process/STATE.md` + 最近 git log；只在任务需要时再读 `archive/`、报告或标准。
+结束（强制）：更新 `STATE.md` 的现状/下一步/阻塞项；近期变更记录每条不超过 5 行、最多保留 5 条，超过时先迁入当月 `archive/STATE-changelog-YYYY-MM.md`。历史不再追加进热区。

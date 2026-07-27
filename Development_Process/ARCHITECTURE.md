@@ -4,6 +4,8 @@
 
 把旧 JSP 站点（`../../原网站代码asinseed`，Java/Dubbo 单体，**只读参考 —— 禁止编辑**）重建为 Next.js + Sanity + Vercel 的 SEO 前台站点。ASINSeed 是免费的发现层（SEO 驱动的自然流量、轻量 Reverse ASIN 查询）；SellerSprite 是付费的决策层。产品职责是在用户表现出决策级意图后干净地导流给 SellerSprite，而不是与其竞争。
 
+**业务北极星（2026-07-26 明确化，响应 `report-agent-system-gaps.md`；与主提示词 §0 一致，非新决策，只是把已隐含的目标显式写入本文档）**：所谓"SEO 驱动的自然流量"是双重目标，不只是 Google 排名——同时优化传统搜索引擎收录排名，与生成式引擎（ChatGPT/Perplexity/Google AI Overview 等）的可引用性与推荐权重（GEO，见 `Development_Process/migration/seo-scoring-standard.md` J/K 类目），两者共同服务于同一条导流路径：获取免费流量 → 命中决策/验证意图的用户 → 通过任务型 CTA 导流到 `sellersprite.ai`。GEO 不是独立于 SEO 之外的另一套目标，而是"自然流量获取"这一既有目标在生成式引擎渠道上的延伸。
+
 本阶段（依据 PRD §0.1）明确排除：全站迁移、真实后端接入、生产发布。完整权威范围/非目标见 `../../prd-docs/PRD.md` §0.2/§2.3，流程细节见 `../../prd-docs/prompts/00_migration_loop_master_prompt.txt`。**SDD.md 是主要的实现依据；PRD.md 用于验收/对照（§10 AC、§12 DoD），不作为主要实现规格来源。**
 
 ## 模块职责（叙述）
