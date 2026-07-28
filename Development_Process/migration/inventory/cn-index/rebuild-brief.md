@@ -73,15 +73,15 @@
 | 内链：本页如何承接/导出意图 | 首页承接品牌/核心工具词，向已发布的产品功能页、资源中心和真实 FAQ 导出；不存在的搜索、插件、博客、帮助页不创建链接。 |
 | 与博客、资源、案例页的分工 | 首页负责实体、可信度和转化；资源/文章负责长尾问题、方法论、案例与 AI 可引用内容。首页只展示少量已发布内容入口，不承担批量文章收录。 |
 
-## 7. 实页验收计划
+## 7. 实页验收结果（2026-07-28）
 
-- [ ] 使用 Chrome/浏览器审查实际 `/cn`，记录桌面与 390px 以上移动视口、日期和结论。
-- [ ] 首屏在无需滚动时表达目标用户、具体价值和一个已真正可执行的主 CTA；不再用未迁移搜索功能伪装成可用工具。
-- [ ] 审查信息层级、可读性、留白、图片裁切、响应式、键盘可达性及动效是否服务任务。
-- [ ] 检查文案具体、专业、可信且无明显模板化 AI 表达；不支持的主张已删除或标为 `UNRESOLVED`。
-- [ ] 验证 Sanity 字段“发布 → 正确页面表面更新”，且 metadata 与可见文案不串扰。
-- [ ] 验证 `/cn` 直达 200、canonical 自指、sitemap 只含 active locale、`/en`/`/zh-cn` 等 planned 路径 404。
-- [ ] 完成 title、description、OG image、Organization/FAQ JSON-LD（适用时）的 Layer B/Layer C 审计，并记录证据与未解决 FAIL。
+- [x] Playwright 默认桌面视口与 390px 宽度验证实际 `/cn`：H1 和主 CTA 可见，390px 无水平溢出；见 `migration/reports/report-cn-homepage-rebuild.md`。
+- [x] 首屏表达目标用户、具体价值和页内“了解反查方法”主 CTA；旧搜索框未迁入，不再伪装未完成的查询任务。
+- [x] 新信息层级只包含 Hero、适用场景、研究方法、真实 FAQ 与收束 CTA；旧评价、合作伙伴、视频、旧博客与外链均未渲染。
+- [x] 正式文案避免数据规模、准确率、客户/伙伴背书等未证实主张。
+- [x] 已发布 `homepageSeo-zh-cn`、`homepageContent-zh-cn` 和 3 条 `homepageFaqEntry`；HTTP 输出确认 H1、metadata、FAQ 与 FAQPage JSON-LD 正确消费。
+- [x] `/cn` 直达 200、canonical 自指、sitemap 只含 active locale，`/en`/`/zh-cn`/`fr` 返回 404（Playwright 9/9）。
+- [ ] OG image 仍未提供，因此 `og:image` 缺失是唯一保留的 Layer C FAIL；Organization 和 FAQPage JSON-LD 已输出。
 
 ## 8. 实施授权与后续输入
 

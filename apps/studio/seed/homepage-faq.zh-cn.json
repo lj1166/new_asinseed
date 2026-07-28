@@ -1,0 +1,26 @@
+[
+  {
+    "_id": "homepageFaq-zh-cn-asin-research",
+    "_type": "homepageFaqEntry",
+    "locale": "zh-cn",
+    "question": "什么是 ASIN 反查？",
+    "answer": "ASIN 反查是一种从具体商品线索出发，辅助研究相关搜索意图与关键词方向的方法。它适合与市场、产品和用户需求分析结合使用，而不替代这些判断。",
+    "order": 1
+  },
+  {
+    "_id": "homepageFaq-zh-cn-homepage-purpose",
+    "_type": "homepageFaqEntry",
+    "locale": "zh-cn",
+    "question": "这个首页目前可以帮助我做什么？",
+    "answer": "首页用于理解竞品关键词研究的场景和方法，帮助你梳理下一步要验证的问题。真实查询任务会在结果工具重构完成后独立承接。",
+    "order": 2
+  },
+  {
+    "_id": "homepageFaq-zh-cn-research-start",
+    "_type": "homepageFaqEntry",
+    "locale": "zh-cn",
+    "question": "开始研究前应该准备什么？",
+    "answer": "先明确一个研究对象，例如具体 ASIN、产品类别或竞品场景，并写清希望理解的问题：是产品表达、搜索意图，还是广告研究方向。",
+    "order": 3
+  }
+]

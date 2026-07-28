@@ -1,0 +1,12 @@
+{
+  "_id": "homepageSeo-zh-cn",
+  "_type": "homepageSeo",
+  "locale": "zh-cn",
+  "seo": {
+    "_type": "seo",
+    "title": "AsinSeed｜亚马逊 ASIN 反查与竞品关键词研究",
+    "description": "AsinSeed 面向亚马逊卖家，以竞品 ASIN、商品表达和用户搜索意图为研究起点，帮助梳理值得进一步验证的关键词方向、Listing 表达线索和广告研究问题。首页提供清晰的方法说明、适用场景与常见问题；它不以单一词表替代判断，而是帮助团队把竞品线索、产品定位和后续验证动作放回同一条可解释的工作路径中。"
+  },
+  "heroHeading": "从竞品线索出发，建立更清晰的关键词研究路径",
+  "heroSubheading": "围绕具体商品、搜索意图与业务问题，组织下一步研究。"
+}

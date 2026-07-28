@@ -1,13 +1,12 @@
 import type { HomepageFaqEntry, HomepageTestimonialEntry } from "@new-asinseed/contracts";
 
-import { HOMEPAGE_FAQ_SEED, HOMEPAGE_TESTIMONIALS_SEED } from "./homepage-content";
 import { getLocaleConfig, type Locale } from "./locales";
 import { getSanityClient } from "./sanity-client";
 
 export async function getHomepageFaq(locale: Locale): Promise<HomepageFaqEntry[]> {
   const client = getSanityClient();
   if (!client) {
-    return HOMEPAGE_FAQ_SEED[locale];
+    return [];
   }
 
   try {
@@ -15,16 +14,16 @@ export async function getHomepageFaq(locale: Locale): Promise<HomepageFaqEntry[]
       `*[_type == "homepageFaqEntry" && locale == $locale] | order(order asc){ locale, question, answer, order }`,
       { locale: getLocaleConfig(locale).sanityLocale },
     );
-    return entries.length > 0 ? entries : HOMEPAGE_FAQ_SEED[locale];
+    return entries;
   } catch {
-    return HOMEPAGE_FAQ_SEED[locale];
+    return [];
   }
 }
 
 export async function getHomepageTestimonials(locale: Locale): Promise<HomepageTestimonialEntry[]> {
   const client = getSanityClient();
   if (!client) {
-    return HOMEPAGE_TESTIMONIALS_SEED[locale];
+    return [];
   }
 
   try {
@@ -39,8 +38,8 @@ export async function getHomepageTestimonials(locale: Locale): Promise<HomepageT
       }`,
       { locale: getLocaleConfig(locale).sanityLocale },
     );
-    return entries.length > 0 ? entries : HOMEPAGE_TESTIMONIALS_SEED[locale];
+    return entries;
   } catch {
-    return HOMEPAGE_TESTIMONIALS_SEED[locale];
+    return [];
   }
 }

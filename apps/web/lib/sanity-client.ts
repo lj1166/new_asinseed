@@ -1,11 +1,10 @@
 import { createClient, type SanityClient } from "@sanity/client";
 
 /**
- * Optional Sanity client. Stage 1 pilot ships with hardcoded/placeholder
- * content (see lib/homepage-content.ts) so the page renders correctly even
- * when no Sanity project is configured yet. Once `NEXT_PUBLIC_SANITY_PROJECT_ID` /
- * `NEXT_PUBLIC_SANITY_DATASET` are set, callers can use this client to fetch the
- * `homepageFaqEntry` / `homepageTestimonialEntry` / `homepageSeo` / `siteSettings` documents.
+ * Optional Sanity client. The rebuilt homepage has safe local fallbacks so it
+ * remains renderable before an operator creates content documents. Once
+ * `NEXT_PUBLIC_SANITY_PROJECT_ID` / `NEXT_PUBLIC_SANITY_DATASET` are set,
+ * callers can fetch published homepage, FAQ, SEO, and site-setting documents.
  */
 export function getSanityClient(): SanityClient | null {
   const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
@@ -19,6 +18,10 @@ export function getSanityClient(): SanityClient | null {
     projectId,
     dataset,
     apiVersion: "2024-01-01",
-    useCdn: true,
+    // Homepage SEO and operator content must reflect a Studio publish on the
+    // predictable ISR window below. Direct API reads avoid the extra,
+    // uncontrolled CDN propagation delay while still requesting public,
+    // published documents only.
+    useCdn: false,
   });
 }

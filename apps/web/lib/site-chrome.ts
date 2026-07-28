@@ -7,16 +7,14 @@ export interface SiteNavLink {
 
 /**
  * Copy for site-wide chrome (header/footer) rendered by the locale layout —
- * kept separate from `homepage-content.ts` because Header/Footer will wrap
+ * kept separate from homepage section content because Header/Footer will wrap
  * future non-homepage pages (blog, help center) too, not just this page.
  *
  * All nav/footer hrefs are deliberately restricted to routes that exist in
- * this app today (`/cn`) or in-page anchors on sections this batch
- * actually renders (`#hero-search`, `#capabilities`, `#resources`). Legacy
- * routes like `/en/extension` or `/en/help` are NOT reused here even though
- * they appear as content links inside the page body (see homepage-content.ts)
- * — this batch only implements `/[locale]`, so promoting those into
- * persistent header/footer nav would add dead links on every future page.
+ * this app today (`/cn`) or in-page anchors rendered by the rebuilt homepage.
+ * Legacy extension, help, partner, blog, and affiliate URLs are intentionally
+ * absent: promoting any of them into global navigation would create a false
+ * capability claim or a dead link.
  */
 export interface SiteChromeCopy {
   brandName: string;
@@ -44,18 +42,18 @@ export const SITE_CHROME_COPY: LocaleContentMap<SiteChromeCopy> = {
     brandName: "AsinSeed",
     brandTagline: "亚马逊关键词反查工具",
     nav: [
-      { label: "产品能力", href: "#capabilities" },
-      { label: "资源", href: "#resources" },
+      { label: "适用场景", href: "#scenarios" },
+      { label: "研究方法", href: "#how-it-works" },
     ],
-    primaryCta: { label: "立即体验", href: "#hero-search" },
+    primaryCta: { label: "了解方法", href: "#how-it-works" },
     mobileMenuOpenLabel: "打开菜单",
     mobileMenuCloseLabel: "关闭菜单",
     languageSwitchLabel: "切换语言",
     footer: {
       productHeading: "产品",
-      productLinks: [{ label: "产品能力", href: "#capabilities" }],
-      resourcesHeading: "资源",
-      resourcesLinks: [{ label: "帮助与常见问题", href: "#resources" }],
+      productLinks: [{ label: "研究方法", href: "#how-it-works" }],
+      resourcesHeading: "探索",
+      resourcesLinks: [{ label: "适用场景", href: "#scenarios" }],
       languageHeading: "语言",
       legalHeading: "法务",
       legalComingSoonLabel: "即将上线",
@@ -67,18 +65,18 @@ export const SITE_CHROME_COPY: LocaleContentMap<SiteChromeCopy> = {
     brandName: "AsinSeed",
     brandTagline: "Amazon Reverse ASIN Research Tool",
     nav: [
-      { label: "Capabilities", href: "#capabilities" },
-      { label: "Resources", href: "#resources" },
+      { label: "Use cases", href: "#scenarios" },
+      { label: "Method", href: "#how-it-works" },
     ],
-    primaryCta: { label: "Try it now", href: "#hero-search" },
+    primaryCta: { label: "See the method", href: "#how-it-works" },
     mobileMenuOpenLabel: "Open menu",
     mobileMenuCloseLabel: "Close menu",
     languageSwitchLabel: "Switch language",
     footer: {
       productHeading: "Product",
-      productLinks: [{ label: "Capabilities", href: "#capabilities" }],
-      resourcesHeading: "Resources",
-      resourcesLinks: [{ label: "Help & FAQ", href: "#resources" }],
+      productLinks: [{ label: "Method", href: "#how-it-works" }],
+      resourcesHeading: "Explore",
+      resourcesLinks: [{ label: "Use cases", href: "#scenarios" }],
       languageHeading: "Language",
       legalHeading: "Legal",
       legalComingSoonLabel: "Coming soon",

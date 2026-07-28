@@ -1,6 +1,11 @@
 import { defineField, defineType } from "sanity";
 import { ACTIVE_SANITY_LOCALE_OPTIONS } from "@new-asinseed/contracts";
 
+const HOMEPAGE_SEO_LOCALE_OPTIONS = [
+  ...ACTIVE_SANITY_LOCALE_OPTIONS,
+  { title: "English（未启用，仅保留历史文档）", value: "en" },
+];
+
 export const homepageSeo = defineType({
   name: "homepageSeo",
   title: "首页 SEO 配置 / Homepage SEO",
@@ -10,9 +15,13 @@ export const homepageSeo = defineType({
       name: "locale",
       title: "语言 / Locale",
       type: "string",
-      options: { list: [...ACTIVE_SANITY_LOCALE_OPTIONS], layout: "radio" },
-      validation: (rule) => rule.required(),
-      description: "当前仅开放简体中文；每个 locale 只能有一份文档。其他语言在简中验收后按语言注册表开放。",
+      options: { list: HOMEPAGE_SEO_LOCALE_OPTIONS, layout: "radio" },
+      validation: (rule) =>
+        rule.required().custom((value, context) => {
+          if (value !== "en" || context.document?._id === "homepageSeo-en") return true;
+          return "英文尚未启用；当前只允许保留既有 homepageSeo-en 历史文档。";
+        }),
+      description: "当前仅开放简体中文；English 仅用于保留已存在的历史文档，不产生路由、导航、sitemap 或 hreflang。",
     }),
     defineField({
       name: "seo",
