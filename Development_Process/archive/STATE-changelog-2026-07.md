@@ -4,6 +4,14 @@
 
 ## 2026-07-27
 
+- 主提示词补强：仅对已有证据的 `exclude` 页面允许跳过 P1→P4，并要求 P4 FAIL 记录 Failure trace（层级、证据、原因、回退阶段、复验命令）。（自 `STATE.md` 近期记录归档，2026-07-28）
+- 基于 Claude Code 对话式约束完成 D-008 最小优化：P1 跨会话快照 `.p1-progress.md` 与全“照搬”IA counterfactual 已写入既有 skill/主提示词；未新增 hooks、脚本、依赖或 Markdown 解析器。（自 `STATE.md` 近期记录归档，2026-07-28）
+- 完成 P2 首项技术修复：新增 Next.js `sitemap.ts`/`robots.ts`，阻止 `[locale]` 将 `.xml/.txt` 误作 locale 而 500。sitemap 仅列 P2 已批准的 `/en`、`/zh-cn`；`pnpm typecheck` 和 5 条 Playwright 验收通过。（自 `STATE.md` 近期记录归档，2026-07-28）
+- 补齐试点页 SEO 运营闭环（P0 缺陷全部落地）。Sanity schema/Zod contracts/`sanity-seo.ts`/`page.tsx generateMetadata()` 完成；三个 Sanity draft 文档已 seed；主提示词 Layer A/P2/P4 升级为硬规则。后续运行时验证及发布状态以 STATE 现状为准。（自 `STATE.md` 近期记录归档，2026-07-28）
+- 本地服务已启动：Studio `localhost:3333`、Next.js `localhost:3000/en` 均返回 HTTP 200。（自 `STATE.md` 近期记录归档，2026-07-28）
+- 完成 Agent-Loop P0/P1：归档热状态、建立 Track B backlog；主提示词改为运行时版本，落地三层验收/Evidence Protocol，并标注缺陷报告实施状态。`pnpm typecheck` 与 3 条首页 Playwright 验收均通过。（自 `STATE.md` 近期记录归档，2026-07-28）
+- 本地 Visual Editing 的 Viewer Token 已仅写入被 Git 忽略的 `apps/web/.env.local`；此前未配置 Sanity Developer Token。`http://localhost:3000` 的 CORS credentials 尚未确认。（迁自 STATE.md 近期记录，2026-07-27 归档）
+- [P0 识别·交接] 用户发现首页 SEO 无 Sanity 可编辑来源，完成根因分析；12 步修复计划草拟完毕，4 个前置决策问题已记录在后续 STATE 的阻塞项。因上下文耗尽触发交接，实现尚未启动。
 - 完成 Sanity MCP 官方文档调研；MCP 不参与当前 Presentation，Presentation 使用 web 端 Viewer Token。未配置 Developer Token 或 MCP 客户端。（迁自 STATE.md 近期记录，2026-07-27 归档）
 - 用户提供《ASINSeed Agent-Loop 完整缺陷总结与架构优化指南》并要求按影响排序执行。对照确认的高优先级问题是：STATE 热记忆膨胀、AGENTS 开篇阶段过期、主提示词仍含已完成的 Stage 0 搭建指令、验证取证规则与首页 e2e 基线缺失；P1 的“信息架构建议”栏位已在现有 skill 中实施，无需重复建设。
 - 用户要求按 Sanity 官方 Next.js App Router Visual Editing 文档接入 Presentation（P0+P1），并明确缺 token/CORS 时不得硬做。已完成只读预检与官方文档核对：当前 `next-sanity` 为 9.12.3（官方当前 Visual Editing 指引要求 13.1.5+），`apps/web/.env.local` 当时不存在；只读 `sanity cors list` 也因 CLI 未登录而无法确认 `http://localhost:3000` 是否已启用 credentials。未修改依赖、代码、CORS 或云端配置。

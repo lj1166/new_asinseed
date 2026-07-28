@@ -2,58 +2,38 @@
 
 ## 现状
 
-- P0 缺陷已识别（本会话）：首页 SEO metadata 无 Sanity 可编辑来源；12 步修复计划已草拟，但 4 个前置决策问题尚未回答（见阻塞项），实现尚未启动。
-- 轨A：`index.jsp` 已完成 P1→P4；下一试点是合并处理的 `search.jsp` / `search_keywords.jsp`（P0 修复优先，search 试点之后）。Stage 2 尚未解锁。
-- 质量基线：`/en` SEO 审计 63/100、`/zh-cn` 59/100（修复前基线）。`sitemap.xml`、`robots.txt` 已修复为 200 并由 e2e 覆盖；JSON-LD、OG 图和元数据质量等 Layer C FAIL 仍未清零。证据见 `migration/reports/report-seo-score-*.md`。
+- **P0 SEO 运营闭环已完成并通过运行时验证（2026-07-27）**：Sanity schema（seoObject/siteSettings/homepageSeo/contentEntry seo+noindex）、Zod contracts、前端 getHomepageSeo/getSiteSettings + page.tsx generateMetadata() 全部落地。三个 Sanity 文档已 seed 并发布（siteSettings、homepageSeo-en、homepageSeo-zh-cn）。
+  - **发现并修复一个致命回归**：`apps/web/lib/sanity-client.ts` 的 `getSanityClient()` 读取的是 `SANITY_PROJECT_ID`/`SANITY_DATASET`，但 `.env.local` 实际定义的是 `NEXT_PUBLIC_SANITY_PROJECT_ID`/`NEXT_PUBLIC_SANITY_DATASET`——命名不一致导致该函数永远返回 `null`，SEO 与 FAQ/testimonials 的 Sanity 读取全部静默走代码兜底，此前"已完成"的说法实际从未在运行时验证过。已修复变量名并同步修正 `.env.local.example`。
+  - **P4 运行时验证（真实执行，非纸面）**：`/en`、`/zh-cn` 页面的 `document.title`/`<meta name="description">`/`<link rel="canonical">`/`og:site_name` 均已确认来自已发布的 Sanity 文档内容（非旧的代码兜底文案）。并完成"编辑已发布文档 → 前端 HTML 同步变化"闭环测试：通过 API 将 `homepageSeo-en` 的 title patch 为测试值，刷新页面确认标题变化（Sanity CDN 传播延迟约 20-90 秒），再 patch 回原值并确认还原——证明闭环是活的，不是一次性初始读取。
+  - FAQ/testimonials（`homepage-data.ts`）共享同一个已修复的 `getSanityClient()`；当前 Sanity 中尚无 `homepageFaqEntry`/`homepageTestimonialEntry` 文档（count=0），因此仍正确走代码 seed 兜底——这是预期行为，非缺陷。
+  - **待人工操作**：提供 og:image 素材（当前 `ogImageUrl` 为空，前端按设计省略 `og:image` 标签，不报错）。
+- 轨A：`index.jsp` 已完成 P1→P4；下一试点是合并处理的 `search.jsp` / `search_keywords.jsx`（SEO P0 已清零，可开始 search 试点）。Stage 2 尚未解锁。
+- 质量基线：`/en` SEO 审计 63/100、`/zh-cn` 59/100（修复前基线）。`sitemap.xml`、`robots.txt` 已修复为 200 并由 e2e 覆盖；og:image 缺失仍是 Layer C FAIL，其余 JSON-LD/metadata 质量问题已有 Sanity 来源可修复。证据见 `migration/reports/report-seo-score-*.md`。
 - 轨B：人工文章发布与后续自动化仍暂停；解锁条件和待办见 `backlog-track-b.md`。
 - Presentation：本地 Viewer 环境变量已配置；`http://localhost:3000` CORS credentials 尚未确认，因此 Visual Editing 尚未实施。
 
 ## 下一步
 
-1. **[P0-立即]** 回答下方阻塞项中的 4 个架构决策问题，然后启动 SEO Sanity 闭环 12 步实现计划（详见阻塞项说明）。
-2. 12 步计划概要（顺序执行）：
-   - [Sanity schema] `seoMetadata` 共享对象类型 → `siteSettings` singleton 文档类型 → `homepageSeo` 每 locale 文档类型 → `contentEntry` 添加 `seo{}` 字段（视决策③）
-   - [contracts] `packages/contracts/src/homepage.ts` 新增 Zod schema
-   - [前端] `apps/web/lib/homepage-seo.ts`（含 fallback 到 DTO） → `apps/web/app/[locale]/page.tsx` `generateMetadata()` 改写（绝对 canonical、og:image、JSON-LD Organization） → `apps/web/app/[locale]/layout.tsx` 去掉静态 metadata override
-   - [数据] 用 Sanity MCP 创建 `siteSettings`、`homepageSeo`（en + zh-cn）初始文档，满足 ≥120 chars description 等硬性下限
-   - [规则] 主提示词 P2/P4 规则更新（视决策④）+ P4 新增 Studio→HTML 传播验证步骤
-3. P0 完成后：执行 `search.jsp` / `search_keywords.jsp` P1 inventory。
+1. **[可选]** 在 Studio 上传 1200×630 og:image 素材至 `homepageSeo-en` / `homepageSeo-zh-cn`，清零 og:image Layer C FAIL。
+2. **[可选]** 在 `apps/web/.env.local` 确认 `NEXT_PUBLIC_SITE_URL=https://asinseed.com`（当前代码有 fallback，可先跳过）。
+3. 执行 `search.jsp` / `search_keywords.jsx` P1 inventory（SEO P0 已解除阻塞，P4 运行时验证已通过）。
 4. [独立] 用户完成 CORS credentials 后，接入并验收 Sanity Presentation / Visual Editing。
 
 ## 阻塞项
 
-**[P0 实现前置决策 — 下一会话开始时回答]**
-
-① **og:image 素材来源**（`metadata-asset-constraints.md` §3 边界：AI 生成需先获批准）：
-   - 选 A：现在用 Sanity `generate_image` 生成一张显式标注 `placeholder` 的 1200×630 占位图，先满足"og:image 不得完全缺失"，后续替换真实素材
-   - 选 B：只接字段/渲染逻辑，Studio 里暂留空；og:image 继续缺失直到用户手动上传
-   - 选 C：用户自提供已有品牌图片路径，直接用作初始 og:image
-
-② **生产域名**（用于 canonical/hreflang/og:url/metadataBase）：
-   - 选 A：`https://www.asinseed.com`（旧站链接出现过，确认这是目标生产域名）
-   - 选 B：先用显式占位域名并在代码注释标注"待替换"
-
-③ **`contentEntry` seo{} 字段**：
-   - 选 A：本次顺手加（只是 schema 定义，不影响轨B暂停状态）
-   - 选 B：只改首页相关 schema，contentEntry 的 seo 字段留到轨B解锁时
-
-④ **主提示词更新范围**（`D:\asinseed重构\prd-docs\prompts\00_migration_loop_master_prompt.txt`）：
-   - 选 A：本次同步更新（§铁则3/§2.3.1 加"index 页必须有可编辑 Sanity SEO 来源"硬规则）
-   - 选 B：只改仓库内 `Development_Process/migration/metadata-asset-constraints.md`，prd-docs 由用户另行同步
-
-**其他阻塞项：**
-- Presentation：需在 Sanity 项目 CORS 中加入 `http://localhost:3000` 并启用 Allow credentials。
-- Stage 2 / Track B：当前技术 SEO/GEO 审计仍有未解决 JSON-LD、OG 图和 metadata 质量 FAIL；详情见两份评分报告和 `backlog-track-b.md`。
+- **og:image**：需用户在 Studio 上传 1200×630 素材至 `homepageSeo-en`/`homepageSeo-zh-cn`，否则 og:image Layer C FAIL 不清零。
+- **Presentation**：需在 Sanity 项目 CORS 中加入 `http://localhost:3000` 并启用 Allow credentials。
+- **Stage 2 / Track B**：og:image 缺失是未解决 Layer C FAIL；其余 JSON-LD/metadata 问题已有 Sanity 来源，待 Studio 内容完善后可重新审计。
 
 ## 近期变更记录
 
 > 更早记录：`archive/STATE-changelog-2026-07.md`。每条不超过 5 行；超过 5 条时先迁入当月 archive，再追加新记录。
 
-- 2026-07-27：[P0 识别·交接] 用户发现首页 SEO 无 Sanity 可编辑来源，完成根因分析；12 步修复计划草拟完毕，4 个前置决策问题已记录在阻塞项。因上下文耗尽触发交接，实现尚未启动，工作树无脏文件。
-- 2026-07-27：本地 Visual Editing 的 Viewer Token 已仅写入被 Git 忽略的 `apps/web/.env.local`；此前未配置 Sanity Developer Token。CORS credentials 尚未确认。
-- 2026-07-27：本地服务已启动：Studio `localhost:3333`、Next.js `localhost:3000/en` 均返回 HTTP 200。
-- 2026-07-27：完成 Agent-Loop P0/P1：归档热状态、建立 Track B backlog；主提示词改为运行时版本，落地三层验收/Evidence Protocol，并标注缺陷报告实施状态。`pnpm typecheck` 与 3 条首页 Playwright 验收均通过。
-- 2026-07-27：完成 P2 首项技术修复：新增 Next.js `sitemap.ts`/`robots.ts`，阻止 `[locale]` 将 `.xml/.txt` 误作 locale 而 500。sitemap 仅列 P2 已批准的 `/en`、`/zh-cn`；`pnpm typecheck` 和 5 条 Playwright 验收通过。
+- 2026-07-28：补齐真实后端接入门（D-009）：只有人工批准后才可由模板创建 `legacy-contract-report.md`；未知接口不得实现。并将 `ContentEntry.body` 的 Zod `string`/Studio Portable Text 不一致列为 Track B 人工发布闭环的首项，未新增真实 API、认证或高可用设计。
+- 2026-07-27：修复 `sanity-client.ts` 环境变量命名不一致（`SANITY_PROJECT_ID`→`NEXT_PUBLIC_SANITY_PROJECT_ID`）导致的致命回归——此前 SEO/FAQ/testimonials 的 Sanity 读取一直静默失败并走代码兜底。完成三文档 seed+发布，并通过 Studio API 编辑已发布文档→前端 HTML 同步变化的完整 P4 闭环验证（`/en`、`/zh-cn` 均通过）。
+- 2026-07-28：首页试点补齐运营可编辑 Hero：`homepageSeo.heroHeading`/`heroSubheading` 现直接覆盖可见 H1/副标题，留空时回退 locale 代码文案。`pnpm typecheck` 通过；`curl localhost:3000/zh-cn` 实测返回已发布 Sanity 测试文案。
+- 2026-07-28：沉淀 D-010：P2 必须为每个 Studio 字段定义“来源→消费位置→fallback”；P4 分别验证 `<head>` metadata 与可见运营文案，禁止保留未被前台消费的伪配置。
+- 2026-07-28：沉淀 D-011：JSP 仅作字段/数据源/用户任务的证据，禁止将旧 DOM、文案、图片和视觉设计作为新站迁移目标；新页面按新契约、SEO/GEO 与运营需求重建。
 
 ## 尝试与失败记录
 

@@ -10,7 +10,7 @@
 
 ## 恢复后顺序
 
-1. **人工文章发布闭环**：扩展 `ContentEntry`、Studio 人工创建/审核、Next.js 文章列表/详情、metadata/JSON-LD/sitemap；先不接 AI。
+1. **人工文章发布闭环**：先统一 `ContentEntry` 的 Zod 契约与 Studio `body` 表达（当前 `string` 与 Portable Text array 不一致），再扩展 Studio 人工创建/审核、Next.js 文章列表/详情、metadata/JSON-LD/sitemap；先不接 AI。
 2. **Studio 运营视图**：为 `ContentEntry`、`KeywordEntry`、`MaterialAsset` 建立按 `workflowState` 的结构视图；不要预装第三方 workflow 插件。
 3. **权限 Gate**：实现并测试 Agent 身份不能推进 `approved`、不能 publish、不能创建/修改 Content Release。
 4. **Content Release 设计**：明确 Release 命名、文档版本、人工最终发布人和失败处理边界；先出设计再接 API。

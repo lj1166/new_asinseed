@@ -6,6 +6,12 @@
       "runtimeExecutable": "pnpm",
       "runtimeArgs": ["--filter", "@new-asinseed/web", "dev"],
       "port": 3000
+    },
+    {
+      "name": "studio-dev",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "@new-asinseed/studio", "dev"],
+      "port": 3333
     }
   ]
 }

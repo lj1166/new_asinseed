@@ -53,3 +53,27 @@
 - 决策：`STATE.md` 只保留现状、下一步、阻塞项、尝试与失败记录和最近五条（每条≤5行）变更记录；更早记录迁入 `Development_Process/archive/STATE-changelog-YYYY-MM.md`。Track B 长任务迁入 `backlog-track-b.md`，提案状态留在原报告的状态表。`AGENTS.md` 只写边界、分流和会话协议，不写长进度。
 - 被拒绝的备选方案：恢复独立 `HISTORY.md` 并与 `STATE.md` 双写 —— 被拒绝，会重新制造 D-005 已消除的平行叙事；继续无限追加 STATE —— 被拒绝，会持续污染每次会话的必要上下文。
 - 后果：会话开始只读热 `STATE.md`；任何会话结束时若将写入第六条记录，必须先归档。历史仍保留，但不再被当作当前事实阅读。
+
+## D-008: P1 使用最小中断快照与信息架构反向复核，不新增运行时自动化 (2026-07-27, accepted)
+- 背景：Claude Code 式对话会话可能中断；`STATE.md` 只能表达项目级状态，无法精确恢复一项已读部分 JSP/include/Controller 的 P1。另一方面，“照搬/调整”栏位若没有反向检查，容易退化成默认全选“照搬”。
+- 决策：仅对跨会话或长时间的 P1，在对应 inventory 目录写 `.p1-progress.md`，记录已完成证据、剩余读取、`UNRESOLVED` 和精确下一步；P1 完成后标为 `completed`。若所有 Index Candidate 均为“照搬”，记录一个 `IA counterfactual`，说明评估过但未采用的替代结构。规则由既有 `jsp-page-inventory` skill 与主提示词承载。
+- 被拒绝的备选方案：新增 Claude hooks 自动写 STATE —— 当前仓库没有现成 hooks 配置，且跨客户端/中断时的触发可靠性未验证；新增 Markdown→Zod 解析器 —— 需要维护脆弱的文档语法解析，当前只有一个 P1 skill，不足以抵消复杂度。
+- 后果：不新增依赖、后台服务、常驻脚本或新 skill；`STATE.md` 仍是项目级唯一热状态，`.p1-progress.md` 仅是可删除/可复核的单页恢复指针。若连续多次出现 progress 漂移或 inventory 格式错误，再按 D-005 评估引入校验脚本。
+
+## D-009: 真实后端接入以获批证据报告为门，不预建设假设性契约 (2026-07-28, accepted)
+- 背景：现有 `ReverseAsinProvider`、Zod 与 Mock Adapter 已能支撑当前迁移；评估发现未来真实后端接入缺少可执行入口，但真实 URL、认证方式、错误格式尚无证据。提前新增端点/认证代码会把假设固化为事实。
+- 决策：仅在人工批准 Mock → 真实 Legacy Adapter 切换后，复制 `Development_Process/specs/backend-integration-template.md` 为 `legacy-contract-report.md`。每项实现须有路由、字段、认证归属和成功/失败样例的证据；`UNRESOLVED` 不得进入 real-adapter。
+- 被拒绝的备选方案：现在预建 `api-endpoints.ts`、`auth.ts`、`errors.ts` 或填入猜测的 URL/认证协议 —— 被拒绝，当前不具备真实接口事实源，且超出试点范围。
+- 后果：主提示词与 `AGENTS.md` 明确对接门；当前只将 Track B 的 Portable Text/Zod 不一致列为恢复后的首项，不实施真实后端与生产化重试/降级设计。
+
+## D-010: 页面 SEO 与可见运营文案采用字段职责单一、发布后双面验证 (2026-07-28, accepted)
+- 背景：首页 `homepageSeo` 的 metadata 已接入，但 `heroHeading`/`heroSubheading` 一度只存在于 Studio 与 GROQ 投影，未被页面消费，造成“可配置却不生效”的误导。
+- 决策：每个 Studio 页面字段在 P2 必须写清唯一来源、前台消费位置和空值 fallback；`seo{}` 仅控制 `<head>`，可见 Hero/正文使用显式内容字段。P4 分别验证 metadata 与可见覆盖字段，确认各自改变正确表面且不串扰。
+- 被拒绝的备选方案：要求 `<title>` 与 H1 强制相同，或保留未消费字段等待以后接线 —— 前者混淆 SEO 与页面文案职责，后者会持续误导运营。
+- 后果：首页已将 Hero 覆盖接入；主提示词 P2/P4 增加字段消费图与发布后双面验证规则，作为后续页面迁移范例。
+
+## D-011: JSP 迁移是字段与业务证据驱动的重建，不是旧站视觉复刻 (2026-07-28, accepted)
+- 背景：旧 JSP 代码在 discovery 中占据大量上下文，容易使 agent 将“读取旧页面”误解为“用新技术栈还原旧页面”，偏离新站通过 SEO/GEO、内容运营和文章规模化获取自然流量的目标。
+- 决策：旧站仅用于提取路由、字段语义、数据来源、用户任务和业务边界证据；DOM、布局、可见文案、图片与视觉设计默认不迁移。新页面从新站 DTO/Schema 出发，按当前 SEO/GEO 信息架构、运营可编辑性与用户任务重写；例外须经用户明确批准并确认内容权利。
+- 被拒绝的备选方案：以 Next.js/Sanity 对旧 JSP 做视觉等价重写 —— 被拒绝，会把新站降格为技术换壳，且继承旧站内容质量、信息架构和运营不可控问题。
+- 后果：AGENTS、主提示词 P1/P3 明确“证据提取 vs 页面重建”边界；后续 inventory 只记录可验证字段与业务事实，P3 不得以旧截图/DOM 作为设计验收基准。
