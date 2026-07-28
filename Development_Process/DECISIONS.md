@@ -77,3 +77,9 @@
 - 决策：旧站仅用于提取路由、字段语义、数据来源、用户任务和业务边界证据；DOM、布局、可见文案、图片与视觉设计默认不迁移。新页面从新站 DTO/Schema 出发，按当前 SEO/GEO 信息架构、运营可编辑性与用户任务重写；例外须经用户明确批准并确认内容权利。
 - 被拒绝的备选方案：以 Next.js/Sanity 对旧 JSP 做视觉等价重写 —— 被拒绝，会把新站降格为技术换壳，且继承旧站内容质量、信息架构和运营不可控问题。
 - 后果：AGENTS、主提示词 P1/P3 明确“证据提取 vs 页面重建”边界；后续 inventory 只记录可验证字段与业务事实，P3 不得以旧截图/DOM 作为设计验收基准。
+
+## D-012: Agent-Loop 按经验升级路由演进，内容 SEO/GEO schema 按消费批次落地 (2026-07-28, accepted)
+- 背景：验收失败与用户纠正已能零散写入 STATE/DECISIONS，但缺少“何时进入测试、主提示词、Skill 或架构决策”的路由；元数据模型评估提出 Article JSON-LD、多语言、quick answer 等字段，但 Track B 尚未解锁，提前建字段会重演 D-010 的伪配置问题。
+- 决策：采用最小经验升级路由：单页错误进源码+测试，字段消费问题进 P2/P4，跨两次复发才申请 Skill，架构取舍进 DECISIONS，其余留 STATE/P4。内容 SEO/GEO MVP 按 `backlog-track-b.md` 分流；仅在人工文章前台同批实现字段、渲染与验证，不预建未消费 schema。
+- 被拒绝的备选方案：自动自修改 Prompt/Skill 的无人值守进化，或立即实现评估清单中全部字段 —— 前者会造成规则膨胀，后者会在暂停的 Track B 中制造无消费者配置。
+- 后果：AGENTS 与主提示词增加统一路由；Track B backlog 成为内容 metadata 的唯一实施顺序，未来文章页以真实数据生成 JSON-LD/hreflang/quick answer，不提供任意 schema 类型编辑器。

@@ -29,11 +29,11 @@
 
 > 更早记录：`archive/STATE-changelog-2026-07.md`。每条不超过 5 行；超过 5 条时先迁入当月 archive，再追加新记录。
 
-- 2026-07-28：补齐真实后端接入门（D-009）：只有人工批准后才可由模板创建 `legacy-contract-report.md`；未知接口不得实现。并将 `ContentEntry.body` 的 Zod `string`/Studio Portable Text 不一致列为 Track B 人工发布闭环的首项，未新增真实 API、认证或高可用设计。
 - 2026-07-27：修复 `sanity-client.ts` 环境变量命名不一致（`SANITY_PROJECT_ID`→`NEXT_PUBLIC_SANITY_PROJECT_ID`）导致的致命回归——此前 SEO/FAQ/testimonials 的 Sanity 读取一直静默失败并走代码兜底。完成三文档 seed+发布，并通过 Studio API 编辑已发布文档→前端 HTML 同步变化的完整 P4 闭环验证（`/en`、`/zh-cn` 均通过）。
 - 2026-07-28：首页试点补齐运营可编辑 Hero：`homepageSeo.heroHeading`/`heroSubheading` 现直接覆盖可见 H1/副标题，留空时回退 locale 代码文案。`pnpm typecheck` 通过；`curl localhost:3000/zh-cn` 实测返回已发布 Sanity 测试文案。
 - 2026-07-28：沉淀 D-010：P2 必须为每个 Studio 字段定义“来源→消费位置→fallback”；P4 分别验证 `<head>` metadata 与可见运营文案，禁止保留未被前台消费的伪配置。
 - 2026-07-28：沉淀 D-011：JSP 仅作字段/数据源/用户任务的证据，禁止将旧 DOM、文案、图片和视觉设计作为新站迁移目标；新页面按新契约、SEO/GEO 与运营需求重建。
+- 2026-07-28：沉淀 D-012：建立经验升级路由；将内容 SEO/GEO MVP 按“同批字段+消费+验证”分流进 Track B backlog，避免为暂停的文章链路预建伪配置。
 
 ## 尝试与失败记录
 

@@ -43,6 +43,7 @@ Never：push/publish/force ops；编辑 `../原网站代码asinseed/` 下任何�
 7. 工程配重（skills / 流程闸门 / 并行轨道）按实际反复出现的需求增长，不预先搭建；这是当前阶段的默认做法，不是一次性清理，具体见 `Development_Process/DECISIONS.md` D-005。新建 skill 走审批闸门：agent 不得自行创建新 skill；仅当判断某模式已具备封装价值时，先向我说明必要性与价值权重，经我审核批准后才能创建 `.claude/skills/*`。
 8. **真实后端接入门**：只有人工明确批准 Mock → 真实 Legacy Adapter 切换后，才可从 `Development_Process/specs/backend-integration-template.md` 创建 `legacy-contract-report.md` 并开展只读 discovery/实现。报告中的路由、字段、认证归属、成功/失败样例必须有旧站源码、抓包、后端负责人或已批准接口文档证据；`UNRESOLVED` 项不得实现 real-adapter。真实机密只可放服务端环境变量/密钥平台，禁止进入浏览器、Sanity 文档、仓库及 `.env.example`。
 9. **Git checkpoint**：每个职责单一且已验证的更改（代码或文档）在当前对话结束前立即创建一个本地 Git commit；按功能拆分，不累计成无关的大提交。只暂存本次可明确归属的路径，绝不夹带用户/生成文件；不 push、不 amend 已有提交。
+10. **经验升级路由**：每次验收 FAIL、用户纠正或运行时发现，先记录“证据、根因、影响范围、复发条件”。单页实现错误 → 源码修复 + 回归测试；字段/Studio/前台消费不一致 → P2/P4 规则 + 测试；跨两次同类任务复发的步骤 → 经批准后升级为 Skill；跨项目边界或架构取舍 → `DECISIONS.md`；尚不足以固化的观察仅留 `STATE.md`/P4 Failure trace。下次同类任务须引用对应规则并验证不复发；禁止从一次低影响事件自动膨胀出新 Skill、服务或流程。
 
 ## Evidence protocol
 
