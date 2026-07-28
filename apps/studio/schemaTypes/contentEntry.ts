@@ -28,5 +28,17 @@ export const contentEntry = defineType({
       initialValue: "draft",
       validation: (rule) => rule.required(),
     }),
+    defineField({
+      name: "seo",
+      title: "SEO 配置",
+      type: "seo",
+    }),
+    defineField({
+      name: "noindex",
+      title: "noindex（阻止搜索引擎收录）",
+      type: "boolean",
+      initialValue: false,
+      description: "仅在明确不希望该文章被收录时勾选。默认 false（允许收录）",
+    }),
   ],
 });

@@ -4,3 +4,4 @@ export * from "./content";
 export * from "./index-decision";
 export * from "./homepage";
 export * from "./suggestions";
+export * from "./seo";
