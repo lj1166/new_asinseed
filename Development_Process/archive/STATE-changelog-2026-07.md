@@ -4,6 +4,7 @@
 
 ## 2026-07-27
 
+- P0 SEO 运营闭环完成并经运行时验证：Sanity schema、Zod contracts、前台 metadata 与已发布文档更新闭环均已落地；发现并修复 `sanity-client.ts` 环境变量命名不一致导致的静默代码兜底。详情以随后 STATE 现状为准。（自 `STATE.md` 近期记录归档，2026-07-28）
 - 补齐真实后端接入门（D-009）：只有人工批准后才可由模板创建 `legacy-contract-report.md`；未知接口不得实现。并将 `ContentEntry.body` 的 Zod `string`/Studio Portable Text 不一致列为 Track B 人工发布闭环的首项，未新增真实 API、认证或高可用设计。（自 `STATE.md` 近期记录归档，2026-07-28）
 - 主提示词补强：仅对已有证据的 `exclude` 页面允许跳过 P1→P4，并要求 P4 FAIL 记录 Failure trace（层级、证据、原因、回退阶段、复验命令）。（自 `STATE.md` 近期记录归档，2026-07-28）
 - 基于 Claude Code 对话式约束完成 D-008 最小优化：P1 跨会话快照 `.p1-progress.md` 与全“照搬”IA counterfactual 已写入既有 skill/主提示词；未新增 hooks、脚本、依赖或 Markdown 解析器。（自 `STATE.md` 近期记录归档，2026-07-28）

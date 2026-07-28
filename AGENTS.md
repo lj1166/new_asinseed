@@ -29,12 +29,12 @@ Ask first 的具体边界仅包括：生产 Sanity publish/delete、生产 Schem
 
 新增依赖、本地 schema 源码、Mock、草稿工件、测试与可恢复的仓库内删除默认执行并在结果中说明，不逐项请求批准。
 
-Never：push/publish/force ops；编辑 `../原网站代码asinseed/` 下任何文件（只读参考，即便它在本仓库 git 边界之外，也不得通过文件工具修改）；把旧 JSP 的 DOM、布局、可见文案、图片或视觉设计当作新站迁移目标；把 PRD 当主要实现规格直接抄（应以 SDD 为准）；把 Mock 数据形状当生产事实源固化；密钥/token 写入仓库任何文件（含 `.env.example`，真实 token 只放 `.env.local`/Vercel Secret）。旧站仅可作为路由、字段语义、数据来源、用户任务与业务边界的证据源；新站页面须围绕新站数据契约、SEO/GEO 信息架构、运营可编辑性和用户任务重新设计。
+Never：push/publish/force ops；编辑 `../原网站代码asinseed/` 下任何文件（只读参考，即便它在本仓库 git 边界之外，也不得通过文件工具修改）；把旧 JSP 的 DOM、布局、可见文案、图片或视觉设计当作新站迁移目标；未获明确确认就跳过页面重构方案直接编写 P2 schema/P3 页面代码；把 PRD 当主要实现规格直接抄（应以 SDD 为准）；把 Mock 数据形状当生产事实源固化；密钥/token 写入仓库任何文件（含 `.env.example`，真实 token 只放 `.env.local`/Vercel Secret）。旧站仅可作为路由、字段语义、数据来源、用户任务与业务边界的证据源；新站页面须围绕新站数据契约、SEO/GEO 信息架构、运营可编辑性和用户任务重新设计。
 
 ## Workflow
 本项目有三条并行但不同性质的工作流，不要混用：
 
-1. **JSP 迁移（Migration Loop，轨A）**：唯一权威流程定义在 `../prd-docs/prompts/00_migration_loop_master_prompt.txt`——P1(发现归类)→P2(契约Schema)→P3(实现导入)→P4(验收放行) 单页节拍，Stage 0(搭loop)→1(试点)→2(分批)→3(放行) 整体节奏，以及 Layer A(迁移不变量)/B(技术边界)/C(SEO+GEO 健康审计) 三层验收。旧站只提供字段与业务证据，新页面不是 JSP 视觉复刻；权限边界以本文件 § Boundaries 为准。`Development_Process/WORKFLOW.md` §1 只索引不复制。P1/P4 产物写入 `Development_Process/migration/`，跨页汇总写入 `Development_Process/mappings/`（见 `Development_Process/DECISIONS.md` D-002）。JSP 页面迁移相关工作走这条线。
+1. **JSP 迁移（Migration Loop，轨A）**：唯一权威流程定义在 `../prd-docs/prompts/00_migration_loop_master_prompt.txt`——P1(发现归类)→**页面重构方案确认**→P2(契约Schema)→P3(实现导入)→P4(验收放行) 单页节拍，Stage 0(搭loop)→1(试点)→2(分批)→3(放行) 整体节奏，以及 Layer A(迁移不变量)/B(技术边界)/C(SEO+GEO 健康审计) 三层验收。首次重构某页面、改变其页面角色/信息架构/CMS 模型时，P1 后必须按 `Development_Process/migration/page-rebuild-brief-template.md` 在该页 inventory 目录产出 `rebuild-brief.md`，获得人工明确确认后才可进入 P2/P3；孤立回归修复且不改变已确认方案时无需重开。旧站只提供字段与业务证据，新页面不是 JSP 视觉复刻；权限边界以本文件 § Boundaries 为准。`Development_Process/WORKFLOW.md` §1 只索引不复制。P1/P4 产物写入 `Development_Process/migration/`，跨页汇总写入 `Development_Process/mappings/`（见 `Development_Process/DECISIONS.md` D-002）。JSP 页面迁移相关工作走这条线。
 2. **内容自动化（Content Agent，轨B，当前暂停）**：关键词库→素材库→agent 写草稿（`workflowState: draft`）→人工审核推进 `in_review`/`approved`→人工设定 Sanity Content Release 定时发布→到点机械发布。权威定义：PRD §8、SDD §10/§11/§12（不是本文件重新展开的地方）。架构上与轨A独立；但当前执行暂停：schema 已建好，需先满足轨A Stage 1（首页与合并搜索页均完成 P4）且无未处理的 Layer C SEO/GEO `FAIL`，才可按 `Development_Process/backlog-track-b.md` 开始 workflowState actions / Content Releases 接线（D-005/D-007）。不走本条以外的三闸门或迁移循环。agent 写入身份永远没有把状态推进到 `approved` 或创建/改动 Content Release 的权限，这是测试断言的硬 Gate，不是约定。
 3. **非迁移新功能**（既不属于轨A也不属于轨B的新增能力）：判断走哪条线：源自某 JSP 页面尚未迁移完的内容/字段 → 轨A；博客/文章内容生产相关 → 轨B；其余全新能力（JSP 和内容自动化都没有对应物）→ 走 `Development_Process/WORKFLOW.md` §3 的轻量 spec 流程（当前阶段已简化为「小改动直接改，大改动写个短 spec.md 拿到一句话认可再做」，不是三闸门，见 D-005）。
 4. 小改动（≤ 2 文件，不涉及 schema/API/permission）跳过 spec 流程，三条线都适用。
