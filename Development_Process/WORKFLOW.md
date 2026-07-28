@@ -14,7 +14,7 @@
 - §6 —— Handoff Registry / CTA v1 范围。
 - §7 —— Stage 0（已完成）→ Stage 1（试点：首页 + 合并搜索结果页）→ Stage 2（按模板分批）→ Stage 3（全量放行）。Stage 2 还受 Layer C 未解决 `FAIL` 阻断。
 
-任何 JSP 迁移任务 —— 盘点、schema 起草、页面导入、批次验收 —— 都走这份文件，而不是下面的通用 spec/plan/tasks 流程。首次重构一个页面、或改变其页面角色/信息架构/CMS 模型时，P1 后先按 `migration/page-rebuild-brief-template.md` 在对应 inventory 目录写 `rebuild-brief.md`；只有获得人工明确确认，才可开始 P2/P3。该 Brief 是面向负责人确认的轻量设计方案，不是新的常驻审批体系；不改变已确认方案的孤立回归修复无需重开。工作产物（P1 逐页 inventory、重构 Brief、P4 批次报告、跨页汇总映射表）放在本目录下的 `migration/` 与 `mappings/` —— 具体布局见 `README.md`，为何迁出 master prompt 字面路径 `migration/...` 见 `DECISIONS.md` D-002。
+任何 JSP 迁移任务 —— 盘点、schema 起草、页面导入、批次验收 —— 都走这份文件，而不是下面的通用 spec/plan/tasks 流程。新一轮逐页迁移前，先在 `mappings/page-map.md` 完成全站页面组合轻扫描：仅按公开 JSP 的路径、标题和局部入口归纳业务域、功能域、主页面角色、候选处置及建议批次；不深读全部 include/Controller，不写页面或 Schema。人工确认新站目标页面组合与首批排期后，才开始该批页面的 P1。首次重构一个页面、或改变其页面角色/信息架构/CMS 模型时，P1 后先按 `migration/page-rebuild-brief-template.md` 在对应 inventory 目录写 `rebuild-brief.md`；只有获得人工明确确认，才可开始 P2/P3。该 Brief 是面向负责人确认的轻量设计方案，不是新的常驻审批体系；不改变已确认方案的孤立回归修复无需重开。工作产物（组合页面地图、P1 逐页 inventory、重构 Brief、P4 批次报告、跨页汇总映射表）放在本目录下的 `migration/` 与 `mappings/` —— 具体布局见 `README.md`，为何迁出 master prompt 字面路径 `migration/...` 见 `DECISIONS.md` D-002。
 
 ### 1.1 验收三层与证据关系
 
