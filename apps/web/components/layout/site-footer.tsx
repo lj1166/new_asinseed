@@ -1,10 +1,11 @@
 import { Container } from "@/components/ui/container";
 import { SITE_CHROME_COPY } from "@/lib/site-chrome";
-import type { Locale } from "@/lib/locales";
+import { getActiveLocaleOptions, type Locale } from "@/lib/locales";
 
 export function SiteFooter({ locale }: { locale: Locale }) {
   const copy = SITE_CHROME_COPY[locale];
   const { footer } = copy;
+  const activeLocales = getActiveLocaleOptions();
 
   return (
     <footer className="border-t border-border bg-muted/40">
@@ -43,14 +44,14 @@ export function SiteFooter({ locale }: { locale: Locale }) {
         <nav aria-label={footer.languageHeading}>
           <h2 className="text-sm font-semibold text-foreground">{footer.languageHeading}</h2>
           <ul className="mt-3 space-y-2">
-            {footer.languageLinks.map((item) => (
-              <li key={item.href}>
-                <a
-                  href={item.href}
+          {activeLocales.map((activeLocale) => (
+            <li key={activeLocale.route}>
+              <a
+                  href={`/${activeLocale.route}`}
                   className="text-sm text-muted-foreground hover:text-foreground"
-                  aria-current={item.href === `/${locale}` ? "page" : undefined}
+                  aria-current={activeLocale.route === locale ? "page" : undefined}
                 >
-                  {item.label}
+                  {activeLocale.title}
                 </a>
               </li>
             ))}

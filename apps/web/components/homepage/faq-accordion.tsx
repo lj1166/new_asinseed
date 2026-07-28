@@ -25,14 +25,18 @@ export function FaqAccordion({ heading, entries, contacts }: FaqAccordionProps) 
           <div key={contact.title} className="rounded-md border p-4">
             <p className="mb-1 font-medium">{contact.title}</p>
             <p className="mb-3 text-sm text-muted-foreground">{contact.body}</p>
-            <a
-              href={contact.linkHref}
-              target={contact.linkOpensNewTab ? "_blank" : undefined}
-              rel={contact.linkOpensNewTab ? "noreferrer" : undefined}
-              className="text-sm font-medium underline underline-offset-2"
-            >
-              {contact.linkLabel}
-            </a>
+            {contact.linkHref ? (
+              <a
+                href={contact.linkHref}
+                target={contact.linkOpensNewTab ? "_blank" : undefined}
+                rel={contact.linkOpensNewTab ? "noreferrer" : undefined}
+                className="text-sm font-medium underline underline-offset-2"
+              >
+                {contact.linkLabel}
+              </a>
+            ) : (
+              <p className="text-sm text-muted-foreground">{contact.linkLabel}</p>
+            )}
           </div>
         ))}
       </div>

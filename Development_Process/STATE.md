@@ -2,26 +2,27 @@
 
 ## 现状
 
-- **P0 SEO 运营闭环已完成并通过运行时验证（2026-07-27）**：Sanity schema（seoObject/siteSettings/homepageSeo/contentEntry seo+noindex）、Zod contracts、前端 getHomepageSeo/getSiteSettings + page.tsx generateMetadata() 全部落地。三个 Sanity 文档已 seed 并发布（siteSettings、homepageSeo-en、homepageSeo-zh-cn）。
+- **P0 SEO 运营闭环已完成并通过运行时验证（2026-07-27，2026-07-28 语言底座修正）**：Sanity schema（seoObject/siteSettings/homepageSeo/contentEntry seo+noindex）、Zod contracts、前端 getHomepageSeo/getSiteSettings + page.tsx generateMetadata() 全部落地。当前仅简中 `cn` 入口启用，并正确读取 Sanity `zh-cn` 文档；既有英文文档保留在数据集中但不再被路由、Studio 下拉或 sitemap 提前暴露。
   - **发现并修复一个致命回归**：`apps/web/lib/sanity-client.ts` 的 `getSanityClient()` 读取的是 `SANITY_PROJECT_ID`/`SANITY_DATASET`，但 `.env.local` 实际定义的是 `NEXT_PUBLIC_SANITY_PROJECT_ID`/`NEXT_PUBLIC_SANITY_DATASET`——命名不一致导致该函数永远返回 `null`，SEO 与 FAQ/testimonials 的 Sanity 读取全部静默走代码兜底，此前"已完成"的说法实际从未在运行时验证过。已修复变量名并同步修正 `.env.local.example`。
-  - **P4 运行时验证（真实执行，非纸面）**：`/en`、`/zh-cn` 页面的 `document.title`/`<meta name="description">`/`<link rel="canonical">`/`og:site_name` 均已确认来自已发布的 Sanity 文档内容（非旧的代码兜底文案）。并完成"编辑已发布文档 → 前端 HTML 同步变化"闭环测试：通过 API 将 `homepageSeo-en` 的 title patch 为测试值，刷新页面确认标题变化（Sanity CDN 传播延迟约 20-90 秒），再 patch 回原值并确认还原——证明闭环是活的，不是一次性初始读取。
+  - **P4 运行时验证（真实执行，非纸面）**：当前 `/cn` 的 `document.title`/`<meta name="description">`/`<link rel="canonical">`/`og:site_name` 均确认来自已发布的 `homepageSeo-zh-cn` 文档（非代码兜底文案）；可见 H1/副标题也确认读取该文档。此前英文验证为历史证据，待简中页面验收后再按语言逐个恢复。
   - FAQ/testimonials（`homepage-data.ts`）共享同一个已修复的 `getSanityClient()`；当前 Sanity 中尚无 `homepageFaqEntry`/`homepageTestimonialEntry` 文档（count=0），因此仍正确走代码 seed 兜底——这是预期行为，非缺陷。
   - **待人工操作**：提供 og:image 素材（当前 `ogImageUrl` 为空，前端按设计省略 `og:image` 标签，不报错）。
 - 轨A：批次 0 已完成全站页面组合轻扫描（`mappings/page-map.md`）：77 个前台 JSP + 1 个优惠活动 JSP 被归并为页面组，49 个后台 JSP 已列 `exclude`；已形成候选页面组合与批次 1～5。`index.jsp` 已完成 P1→P4；下一步不是直接做搜索 P1，而是人工确认批次 1 范围（首页重构 Brief + 合并处理的 `search.jsp` / `search_keywords.jsp` 工具流）后再执行。Stage 2 尚未解锁。
-- 质量基线：`/en` SEO 审计 63/100、`/zh-cn` 59/100（修复前基线）。`sitemap.xml`、`robots.txt` 已修复为 200 并由 e2e 覆盖；og:image 缺失仍是 Layer C FAIL，其余 JSON-LD/metadata 质量问题已有 Sanity 来源可修复。证据见 `migration/reports/report-seo-score-*.md`。
+- 质量基线：历史 `/en` 63/100、`/zh-cn` 59/100 已不再代表当前 URL 契约；`/cn` 路由、canonical、sitemap、robots 与 inactive locale 404 已由 e2e/HTTP 验证。og:image 缺失仍是 Layer C FAIL；首页整体内容/信息架构须在新 `rebuild-brief.md` 获确认后重新审计。
 - 轨B：人工文章发布与后续自动化仍暂停；解锁条件和待办见 `backlog-track-b.md`。
 - Presentation：本地 Viewer 环境变量已配置；`http://localhost:3000` CORS credentials 尚未确认，因此 Visual Editing 尚未实施。
 
 ## 下一步
 
-1. **[可选]** 在 Studio 上传 1200×630 og:image 素材至 `homepageSeo-en` / `homepageSeo-zh-cn`，清零 og:image Layer C FAIL。
+1. **[可选]** 在 Studio 上传 1200×630 og:image 素材至 `homepageSeo-zh-cn`，清零当前简中首页的 og:image Layer C FAIL。
 2. **[可选]** 在 `apps/web/.env.local` 确认 `NEXT_PUBLIC_SITE_URL=https://asinseed.com`（当前代码有 fallback，可先跳过）。
-3. 确认 `mappings/page-map.md` 的新站页面组合与批次 1 范围；确认后执行 `search.jsp` / `search_keywords.jsp` P1 inventory，并先提交页面角色驱动的 `rebuild-brief.md` 获确认，再进入 P2/P3。
+3. 先确认首页重构 Brief：当前正文仍含旧站式文案/素材和旧博客外链，不能把已修复的语言底座误当成新 SaaS 首页已完成；获确认后按页面角色、事实来源与 CMS 消费边界重构。随后确认 `mappings/page-map.md` 的批次 1 范围，执行合并 `search.jsp` / `search_keywords.jsp` 的 P1 与 Brief。
 4. [独立] 用户完成 CORS credentials 后，接入并验收 Sanity Presentation / Visual Editing。
 
 ## 阻塞项
 
-- **og:image**：需用户在 Studio 上传 1200×630 素材至 `homepageSeo-en`/`homepageSeo-zh-cn`，否则 og:image Layer C FAIL 不清零。
+- **og:image**：需用户在 Studio 上传 1200×630 素材至 `homepageSeo-zh-cn`，否则 og:image Layer C FAIL 不清零。
+- **首页重构范围**：语言/URL 运行错误已经修复，但当前首页还不是经确认的现代 SaaS 重构页面；不得继续按旧 JSP 文案、素材和外链做增量复刻，需先获首页 `rebuild-brief.md` 确认。
 - **Presentation**：需在 Sanity 项目 CORS 中加入 `http://localhost:3000` 并启用 Allow credentials。
 - **Stage 2 / Track B**：og:image 缺失是未解决 Layer C FAIL；其余 JSON-LD/metadata 问题已有 Sanity 来源，待 Studio 内容完善后可重新审计。
 
@@ -29,11 +30,11 @@
 
 > 更早记录：`archive/STATE-changelog-2026-07.md`。每条不超过 5 行；超过 5 条时先迁入当月 archive，再追加新记录。
 
-- 2026-07-28：沉淀 D-010：P2 必须为每个 Studio 字段定义“来源→消费位置→fallback”；P4 分别验证 `<head>` metadata 与可见运营文案，禁止保留未被前台消费的伪配置。
 - 2026-07-28：沉淀 D-011：JSP 仅作字段/数据源/用户任务的证据，禁止将旧 DOM、文案、图片和视觉设计作为新站迁移目标；新页面按新契约、SEO/GEO 与运营需求重建。
 - 2026-07-28：沉淀 D-012：建立经验升级路由；将内容 SEO/GEO MVP 按“同批字段+消费+验证”分流进 Track B backlog，避免为暂停的文章链路预建伪配置。
 - 2026-07-28：沉淀 D-013：首次页面重构/改变页面角色、IA 或 CMS 模型时，P1 后先提交 `rebuild-brief.md` 并等待确认；补入事实/创作内容边界、现代 SaaS 页面角色和 Chrome 实页体验审查，避免旧 JSP 结构与文案重新成为默认模板。
 - 2026-07-28：完成 D-014 批次 0 全站轻扫描：77 个前台 JSP、1 个优惠活动 JSP 和 49 个后台 JSP 按业务/功能/页面角色归并；页面地图给出新站候选组合与批次 1～5，未读取全量 include/Controller，也未创建页面或 Schema。
+- 2026-07-28：完成 D-015 中文优先语言底座：共享语言注册表仅启用 `/cn`，根路径/导航/Studio/sitemap/canonical 全部收敛；`/en`、`/zh-cn` 等 inactive 路径 404，Playwright 7/7、桌面/移动实页与 Studio HTTP 200 已验证。搜索/插件/帮助入口不再跳往未迁移 404。
 
 ## 尝试与失败记录
 

@@ -34,14 +34,18 @@ export function CapabilityShowcase({ header, features, extension, video }: Capab
               <li key={bullet}>{bullet}</li>
             ))}
           </ul>
-          <a
-            href={extension.ctaHref}
-            target={extension.ctaOpensNewTab ? "_blank" : undefined}
-            rel={extension.ctaOpensNewTab ? "noreferrer" : undefined}
-            className="inline-flex h-10 items-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-          >
-            {extension.ctaLabel}
-          </a>
+          {extension.ctaHref ? (
+            <a
+              href={extension.ctaHref}
+              target={extension.ctaOpensNewTab ? "_blank" : undefined}
+              rel={extension.ctaOpensNewTab ? "noreferrer" : undefined}
+              className="inline-flex h-10 items-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+            >
+              {extension.ctaLabel}
+            </a>
+          ) : (
+            <p className="text-sm text-muted-foreground">{extension.ctaLabel}</p>
+          )}
         </div>
         <Image
           src={extension.imageSrc}

@@ -1,4 +1,5 @@
 import { defineField, defineType } from "sanity";
+import { ACTIVE_SANITY_LOCALE_OPTIONS } from "@new-asinseed/contracts";
 
 export const homepageSeo = defineType({
   name: "homepageSeo",
@@ -9,9 +10,9 @@ export const homepageSeo = defineType({
       name: "locale",
       title: "语言 / Locale",
       type: "string",
-      options: { list: ["en", "zh-cn"], layout: "radio" },
+      options: { list: [...ACTIVE_SANITY_LOCALE_OPTIONS], layout: "radio" },
       validation: (rule) => rule.required(),
-      description: "每个 locale 只能有一份文档",
+      description: "当前仅开放简体中文；每个 locale 只能有一份文档。其他语言在简中验收后按语言注册表开放。",
     }),
     defineField({
       name: "seo",

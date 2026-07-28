@@ -1,6 +1,6 @@
 import type { HomepageSeo, SiteSettings } from "@new-asinseed/contracts";
 
-import type { Locale } from "./locales";
+import { getLocaleConfig, type Locale } from "./locales";
 import { getSanityClient } from "./sanity-client";
 
 // ---------------------------------------------------------------------------
@@ -49,7 +49,7 @@ export async function getHomepageSeo(locale: Locale): Promise<HomepageSeo | null
         heroHeading,
         heroSubheading,
       }`,
-      { locale },
+      { locale: getLocaleConfig(locale).sanityLocale },
     );
     return doc ?? null;
   } catch {

@@ -7,8 +7,9 @@ test("sitemap exposes exactly the currently indexable locale homepages", async (
   expect(response.headers()["content-type"]).toContain("xml");
 
   const xml = await response.text();
-  expect(xml).toContain("/en</loc>");
-  expect(xml).toContain("/zh-cn</loc>");
+  expect(xml).toContain("/cn</loc>");
+  expect(xml).not.toContain("/en</loc>");
+  expect(xml).not.toContain("/zh-cn</loc>");
   expect(xml).not.toContain("/US");
 });
 

@@ -1,4 +1,4 @@
-import type { Locale } from "./locales";
+import type { Locale, LocaleContentMap } from "./locales";
 
 export interface SiteNavLink {
   label: string;
@@ -11,7 +11,7 @@ export interface SiteNavLink {
  * future non-homepage pages (blog, help center) too, not just this page.
  *
  * All nav/footer hrefs are deliberately restricted to routes that exist in
- * this app today (`/en`, `/zh-cn`) or in-page anchors on sections this batch
+ * this app today (`/cn`) or in-page anchors on sections this batch
  * actually renders (`#hero-search`, `#capabilities`, `#resources`). Legacy
  * routes like `/en/extension` or `/en/help` are NOT reused here even though
  * they appear as content links inside the page body (see homepage-content.ts)
@@ -32,16 +32,15 @@ export interface SiteChromeCopy {
     resourcesHeading: string;
     resourcesLinks: SiteNavLink[];
     languageHeading: string;
-    languageLinks: SiteNavLink[];
-    legalHeading: string;
+      legalHeading: string;
     legalComingSoonLabel: string;
     legalItems: string[];
     copyright: string;
   };
 }
 
-export const SITE_CHROME_COPY: Record<Locale, SiteChromeCopy> = {
-  "zh-cn": {
+export const SITE_CHROME_COPY: LocaleContentMap<SiteChromeCopy> = {
+  cn: {
     brandName: "AsinSeed",
     brandTagline: "亚马逊关键词反查工具",
     nav: [
@@ -58,10 +57,6 @@ export const SITE_CHROME_COPY: Record<Locale, SiteChromeCopy> = {
       resourcesHeading: "资源",
       resourcesLinks: [{ label: "帮助与常见问题", href: "#resources" }],
       languageHeading: "语言",
-      languageLinks: [
-        { label: "中文", href: "/zh-cn" },
-        { label: "English", href: "/en" },
-      ],
       legalHeading: "法务",
       legalComingSoonLabel: "即将上线",
       legalItems: ["隐私政策", "服务条款"],
@@ -85,10 +80,6 @@ export const SITE_CHROME_COPY: Record<Locale, SiteChromeCopy> = {
       resourcesHeading: "Resources",
       resourcesLinks: [{ label: "Help & FAQ", href: "#resources" }],
       languageHeading: "Language",
-      languageLinks: [
-        { label: "English", href: "/en" },
-        { label: "中文", href: "/zh-cn" },
-      ],
       legalHeading: "Legal",
       legalComingSoonLabel: "Coming soon",
       legalItems: ["Privacy Policy", "Terms of Service"],

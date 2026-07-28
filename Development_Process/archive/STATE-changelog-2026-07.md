@@ -4,6 +4,7 @@
 
 ## 2026-07-27
 
+- 沉淀 D-010：P2 必须为每个 Studio 字段定义“来源→消费位置→fallback”；P4 分别验证 `<head>` metadata 与可见运营文案，禁止保留未被前台消费的伪配置。（自 `STATE.md` 近期记录归档，2026-07-28）
 - 首页试点补齐运营可编辑 Hero：`homepageSeo.heroHeading`/`heroSubheading` 现直接覆盖可见 H1/副标题，留空时回退 locale 代码文案；`pnpm typecheck` 与本地 Sanity 发布内容读取验证通过。（自 `STATE.md` 近期记录归档，2026-07-28）
 - P0 SEO 运营闭环完成并经运行时验证：Sanity schema、Zod contracts、前台 metadata 与已发布文档更新闭环均已落地；发现并修复 `sanity-client.ts` 环境变量命名不一致导致的静默代码兜底。详情以随后 STATE 现状为准。（自 `STATE.md` 近期记录归档，2026-07-28）
 - 补齐真实后端接入门（D-009）：只有人工批准后才可由模板创建 `legacy-contract-report.md`；未知接口不得实现。并将 `ContentEntry.body` 的 Zod `string`/Studio Portable Text 不一致列为 Track B 人工发布闭环的首项，未新增真实 API、认证或高可用设计。（自 `STATE.md` 近期记录归档，2026-07-28）

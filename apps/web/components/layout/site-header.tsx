@@ -1,10 +1,11 @@
 import { Container } from "@/components/ui/container";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { SITE_CHROME_COPY } from "@/lib/site-chrome";
-import type { Locale } from "@/lib/locales";
+import { getActiveLocaleOptions, type Locale } from "@/lib/locales";
 
 export function SiteHeader({ locale }: { locale: Locale }) {
   const copy = SITE_CHROME_COPY[locale];
+  const activeLocales = getActiveLocaleOptions();
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
@@ -23,16 +24,19 @@ export function SiteHeader({ locale }: { locale: Locale }) {
         </nav>
 
         <div className="hidden items-center gap-4 sm:flex">
-          <div aria-label={copy.languageSwitchLabel} className="flex items-center gap-2 text-sm">
-            <a href="/zh-cn" className="text-foreground/70 hover:text-foreground" aria-current={locale === "zh-cn" ? "page" : undefined}>
-              中文
-            </a>
-            <span aria-hidden="true" className="text-border">
-              /
-            </span>
-            <a href="/en" className="text-foreground/70 hover:text-foreground" aria-current={locale === "en" ? "page" : undefined}>
-              EN
-            </a>
+          <div aria-label={copy.languageSwitchLabel} className="flex items-center gap-2 text-sm text-foreground/70">
+            {activeLocales.map((activeLocale, index) => (
+              <span key={activeLocale.route} className="flex items-center gap-2">
+                {index > 0 ? <span aria-hidden="true" className="text-border">/</span> : null}
+                {activeLocale.route === locale ? (
+                  <span aria-current="page">{activeLocale.title}</span>
+                ) : (
+                  <a href={`/${activeLocale.route}`} className="hover:text-foreground">
+                    {activeLocale.title}
+                  </a>
+                )}
+              </span>
+            ))}
           </div>
           <a
             href={copy.primaryCta.href}

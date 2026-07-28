@@ -1,4 +1,5 @@
 import { defineField, defineType } from "sanity";
+import { ACTIVE_SANITY_LOCALE_OPTIONS } from "@new-asinseed/contracts";
 
 export const homepageTestimonialEntry = defineType({
   name: "homepageTestimonialEntry",
@@ -8,7 +9,7 @@ export const homepageTestimonialEntry = defineType({
     defineField({
       name: "locale",
       type: "string",
-      options: { list: ["en", "zh-cn"] },
+      options: { list: [...ACTIVE_SANITY_LOCALE_OPTIONS] },
       validation: (rule) => rule.required(),
     }),
     defineField({ name: "quoteText", type: "text", validation: (rule) => rule.required() }),

@@ -1,6 +1,6 @@
 import type { HomepageFaqEntry, HomepageTestimonialEntry } from "@new-asinseed/contracts";
 
-import type { Locale } from "./locales";
+import type { LocaleContentMap } from "./locales";
 
 export interface StationOption {
   code: string;
@@ -44,14 +44,15 @@ export interface HomepageCopy {
     historyLabel: string;
     emptyValidationMessage: string;
     examplesLabel: string;
-    examples: { label: string; href: string }[];
+    examples: { label: string; value: string }[];
+    unavailableMessage: string;
   };
   stations: StationOption[];
   features: FeatureBlock[];
   extension: {
     heading: string;
     bullets: string[];
-    ctaHref: string;
+    ctaHref: string | null;
     ctaLabel: string;
     ctaOpensNewTab: boolean;
     imageSrc: string;
@@ -69,7 +70,7 @@ export interface HomepageCopy {
       icon: string;
       title: string;
       body: string;
-      linkHref: string;
+      linkHref: string | null;
       linkLabel: string;
       linkOpensNewTab: boolean;
     }[];
@@ -101,8 +102,8 @@ const EN_STATIONS: StationOption[] = [
   { code: "IN", flagSrc: "/assets-frontend/vendor/flag-icon-css/flags/4x3/in.svg", label: "India" },
 ];
 
-export const HOMEPAGE_COPY: Record<Locale, HomepageCopy> = {
-  "zh-cn": {
+export const HOMEPAGE_COPY: LocaleContentMap<HomepageCopy> = {
+  cn: {
     pageTitle: "AsinSeed - 超准确的亚马逊关键词反查工具",
     hero: {
       heading: "AsinSeed - 超准确的亚马逊关键词反查工具",
@@ -114,10 +115,11 @@ export const HOMEPAGE_COPY: Record<Locale, HomepageCopy> = {
       emptyValidationMessage: "请输入需要查询的产品ASIN或关键词",
       examplesLabel: "示例:",
       examples: [
-        { label: "flashlight", href: "/zh-cn/US?q=flashlight" },
-        { label: "B01IHHLB3W", href: "/zh-cn/US/B01IHHLB3W?qid=4800e5f0acc9" },
-        { label: "B07YC8PVF1", href: "/zh-cn/US/B07YC8PVF1?qid=b66085ef26ef" },
+        { label: "flashlight", value: "flashlight" },
+        { label: "B01IHHLB3W", value: "B01IHHLB3W" },
+        { label: "B07YC8PVF1", value: "B07YC8PVF1" },
       ],
+      unavailableMessage: "查询结果页正在重构中，暂不提供查询。",
     },
     stations: CN_STATIONS,
     features: [
@@ -147,8 +149,8 @@ export const HOMEPAGE_COPY: Record<Locale, HomepageCopy> = {
         "终生无限次试用，每月有免费无限制查询额度",
         "支持关键词导出，直接用来优化Listing和PPC广告",
       ],
-      ctaHref: "/zh-cn/extension",
-      ctaLabel: "前往下载",
+      ctaHref: null,
+      ctaLabel: "插件页面正在重构",
       ctaOpensNewTab: false,
       imageSrc: "/assets/images/extension/extension-20181121.png",
     },
@@ -200,8 +202,8 @@ export const HOMEPAGE_COPY: Record<Locale, HomepageCopy> = {
           icon: "fa-envelope",
           title: "找不到您关心的问题?",
           body: "给我们发送邮件，详尽描述您的问题，我们将尽快回复您。",
-          linkHref: "/zh-cn/help",
-          linkLabel: "写邮件给我们",
+          linkHref: null,
+          linkLabel: "帮助中心正在重构",
           linkOpensNewTab: false,
         },
         {
@@ -228,10 +230,11 @@ export const HOMEPAGE_COPY: Record<Locale, HomepageCopy> = {
       emptyValidationMessage: "ASIN or Keyword is required.",
       examplesLabel: "Examples:",
       examples: [
-        { label: "flashlight", href: "/en/US?q=flashlight" },
-        { label: "B01IHHLB3W", href: "/en/US/B01IHHLB3W?qid=4800e5f0acc9" },
-        { label: "B07YC8PVF1", href: "/en/US/B07YC8PVF1?qid=b66085ef26ef" },
+        { label: "flashlight", value: "flashlight" },
+        { label: "B01IHHLB3W", value: "B01IHHLB3W" },
+        { label: "B07YC8PVF1", value: "B07YC8PVF1" },
       ],
+      unavailableMessage: "The search results page is being rebuilt and is not available yet.",
     },
     stations: EN_STATIONS,
     features: [
@@ -326,8 +329,8 @@ export const HOMEPAGE_COPY: Record<Locale, HomepageCopy> = {
  * ("Kerry") uses the avatar file `levin.png`, a legacy filename/name
  * mismatch preserved as-is rather than "corrected".
  */
-export const HOMEPAGE_TESTIMONIALS_SEED: Record<Locale, HomepageTestimonialEntry[]> = {
-  "zh-cn": [
+export const HOMEPAGE_TESTIMONIALS_SEED: LocaleContentMap<HomepageTestimonialEntry[]> = {
+  cn: [
     {
       locale: "zh-cn",
       quoteText:
@@ -405,8 +408,8 @@ export const HOMEPAGE_TESTIMONIALS_SEED: Record<Locale, HomepageTestimonialEntry
  * and must be replaced with real content fetched from Sanity (or the actual
  * legacy `tips` table) before this page is considered content-complete.
  */
-export const HOMEPAGE_FAQ_SEED: Record<Locale, HomepageFaqEntry[]> = {
-  "zh-cn": [
+export const HOMEPAGE_FAQ_SEED: LocaleContentMap<HomepageFaqEntry[]> = {
+  cn: [
     {
       locale: "zh-cn",
       question: "[占位内容] 这是一个示例问题？",
@@ -465,8 +468,8 @@ export interface HomepageSectionsCopy {
   };
 }
 
-export const HOMEPAGE_SECTIONS_COPY: Record<Locale, HomepageSectionsCopy> = {
-  "zh-cn": {
+export const HOMEPAGE_SECTIONS_COPY: LocaleContentMap<HomepageSectionsCopy> = {
+  cn: {
     capabilities: {
       eyebrow: "产品能力",
       title: "核心产品能力",

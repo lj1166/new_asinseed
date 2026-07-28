@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 
 import { CapabilityShowcase } from "@/components/homepage/capability-showcase";
 import { ContentHubPreview } from "@/components/homepage/content-hub-preview";
@@ -7,14 +8,15 @@ import { SearchForm } from "@/components/homepage/search-form";
 import { HOMEPAGE_COPY, HOMEPAGE_SECTIONS_COPY } from "@/lib/homepage-content";
 import { getHomepageFaq, getHomepageTestimonials } from "@/lib/homepage-data";
 import { getHomepageSeo, getSiteSettings } from "@/lib/sanity-seo";
-import { LOCALES, type Locale } from "@/lib/locales";
+import { getLocaleConfig, isActiveLocale, LOCALES, type Locale } from "@/lib/locales";
 
 interface PageProps {
   params: Promise<{ locale: string }>;
 }
 
 function resolveLocale(locale: string): Locale {
-  return (LOCALES as readonly string[]).includes(locale) ? (locale as Locale) : "en";
+  if (!isActiveLocale(locale)) notFound();
+  return locale;
 }
 
 function getSiteUrl(): string {
@@ -48,23 +50,29 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const description = homepageSeo?.seo?.description ?? copy.hero.subheading;
   const ogImageUrl = homepageSeo?.seo?.ogImageUrl;
   const canonical = homepageSeo?.seo?.canonicalOverride ?? `${siteUrl}/${locale}`;
+  const localeConfig = getLocaleConfig(locale);
+  const languages =
+    LOCALES.length > 1
+      ? Object.fromEntries(
+          LOCALES.map((activeLocale) => [
+            getLocaleConfig(activeLocale).hreflang,
+            `${siteUrl}/${activeLocale}`,
+          ]),
+        )
+      : undefined;
 
   return {
     title,
     description,
     alternates: {
       canonical,
-      languages: {
-        en: `${siteUrl}/en`,
-        "zh-cn": `${siteUrl}/zh-cn`,
-        "x-default": `${siteUrl}/en`,
-      },
+      ...(languages ? { languages } : {}),
     },
     openGraph: {
       title,
       description,
       type: "website",
-      locale: locale === "zh-cn" ? "zh_CN" : "en_US",
+      locale: localeConfig.ogLocale,
       url: canonical,
       siteName,
       ...(ogImageUrl
@@ -112,7 +120,7 @@ export default async function HomePage({ params }: PageProps) {
         <section id="hero-search" className="mx-auto flex max-w-3xl flex-col items-center gap-4 px-4 py-16 text-center">
           <h1 className="text-3xl font-semibold">{heroHeading}</h1>
           <p className="text-muted-foreground">{heroSubheading}</p>
-          <SearchForm locale={locale} hero={copy.hero} stations={copy.stations} />
+          <SearchForm hero={copy.hero} stations={copy.stations} />
         </section>
 
         <CapabilityShowcase

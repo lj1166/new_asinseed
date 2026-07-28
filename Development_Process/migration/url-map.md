@@ -2,7 +2,20 @@
 
 本文件按 P2 契约阶段逐页累积写入，不按页拆分为多个文件——URL 映射与 IndexDecision 需要跨页面横向比对（互相 hreflang 指向、canonical 唯一性），拆散到每页目录反而不便核对。首条记录来自 `index.jsp`（试点首页），后续每完成一页 P2 就在下方追加，不改写已有行。
 
-## URL Map
+## 当前生效契约（D-015，2026-07-28）
+
+负责人确认采用“底座先行、简中先验收”的发布顺序。当前唯一启用且可收录的语言是简体中文 `cn`；繁中、英、法、德、意、西、日、越南、马来仅在共享语言注册表中预留，尚不生成页面、hreflang、导航入口或 sitemap URL。
+
+| Legacy URL | New URL | 状态 | Canonical | Hreflang | 处置 |
+|---|---|---|---|---|---|
+| `/cn` | `/cn` | active / indexable | self (`/cn`) | 单语言阶段不输出 | 路径原样保留，无需 301 |
+| `/en` | `/en` | reserved / not yet served | 仅启用后生成 | 仅启用后生成 | 保留一一对应目标；不得暂时跳转到 `/cn` 或首页 |
+
+启用任一预留语言的 P4 前置条件：已完成该语言本地化内容、Studio locale 选项、路由/导航、canonical/hreflang、sitemap 与浏览器/HTTP 回归验证。若确需修改已知旧 URL，必须先获得线上 URL 变更批准，并在本表记录唯一的等价目标与单跳 301 理由。
+
+## 历史首轮 P2 记录（已被 D-015 取代，不作为当前实现依据）
+
+### URL Map
 
 | Legacy URL | New URL | Locale | Canonical | Hreflang alternates | 迁移方式 | 证据 |
 |---|---|---|---|---|---|---|
@@ -11,7 +24,7 @@
 
 x-default 选 `/en` 而非 `/zh-cn`：与旧站 `languages.jsp:16-18` 生成的 hreflang 集合行为一致（en 是面向国际流量的默认版本），非新引入的决策。
 
-## IndexDecision 表
+### IndexDecision 表
 
 沿用 `packages/contracts/src/index-decision.ts` 的 `IndexDecisionSchema`（`index: boolean`, `reason: enum`, `inSitemap: boolean`）。
 

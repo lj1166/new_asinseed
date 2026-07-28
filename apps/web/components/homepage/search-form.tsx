@@ -2,26 +2,23 @@
 
 import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
-import { useRouter } from "next/navigation";
 
 import type { SuggestionItem, SuggestionResponse } from "@new-asinseed/contracts";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { HomepageCopy, StationOption } from "@/lib/homepage-content";
-import type { Locale } from "@/lib/locales";
 
 interface SearchFormProps {
-  locale: Locale;
   hero: HomepageCopy["hero"];
   stations: StationOption[];
 }
 
-export function SearchForm({ locale, hero, stations }: SearchFormProps) {
-  const router = useRouter();
+export function SearchForm({ hero, stations }: SearchFormProps) {
   const [station, setStation] = useState(stations[0]?.code ?? "US");
   const [keyword, setKeyword] = useState("");
   const [suggestions, setSuggestions] = useState<SuggestionItem[]>([]);
   const [showValidation, setShowValidation] = useState(false);
+  const [showUnavailable, setShowUnavailable] = useState(false);
 
   useEffect(() => {
     const trimmed = keyword.trim();
@@ -58,10 +55,13 @@ export function SearchForm({ locale, hero, stations }: SearchFormProps) {
     const trimmed = keyword.trim();
     if (!trimmed) {
       setShowValidation(true);
+      setShowUnavailable(false);
       return;
     }
     setShowValidation(false);
-    router.push(`/${locale}/${station}?q=${encodeURIComponent(trimmed)}`);
+    // The merged search flow has not passed its P1/rebuild-brief gate yet.
+    // Keep the pilot honest and avoid routing users to a fabricated 404 page.
+    setShowUnavailable(true);
   }
 
   return (
@@ -96,6 +96,11 @@ export function SearchForm({ locale, hero, stations }: SearchFormProps) {
           {hero.emptyValidationMessage}
         </p>
       ) : null}
+      {showUnavailable ? (
+        <p role="status" className="text-sm text-muted-foreground">
+          {hero.unavailableMessage}
+        </p>
+      ) : null}
       {suggestions.length > 0 ? (
         <ul className="rounded-md border border-input bg-background text-sm shadow-sm">
           {suggestions.map((item) => (
@@ -108,10 +113,17 @@ export function SearchForm({ locale, hero, stations }: SearchFormProps) {
       <p className="text-xs text-muted-foreground">
         {hero.examplesLabel}{" "}
         {hero.examples.map((example, index) => (
-          <span key={example.href}>
-            <a href={example.href} className="underline underline-offset-2">
+          <span key={example.value}>
+            <button
+              type="button"
+              className="underline underline-offset-2"
+              onClick={() => {
+                setKeyword(example.value);
+                setShowUnavailable(false);
+              }}
+            >
               {example.label}
-            </a>
+            </button>
             {index < hero.examples.length - 1 ? ", " : ""}
           </span>
         ))}

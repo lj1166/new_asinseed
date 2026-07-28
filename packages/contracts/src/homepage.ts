@@ -1,6 +1,7 @@
 import { z } from "zod";
+import { SANITY_CONTENT_LOCALES } from "./locales";
 
-export const HOMEPAGE_LOCALES = ["en", "zh-cn"] as const;
+export const HOMEPAGE_LOCALES = SANITY_CONTENT_LOCALES;
 
 export const HomepageFaqEntrySchema = z.object({
   locale: z.enum(HOMEPAGE_LOCALES),

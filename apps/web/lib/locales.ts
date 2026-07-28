@@ -1,2 +1,7 @@
-export const LOCALES = ["en", "zh-cn"] as const;
-export type Locale = (typeof LOCALES)[number];
+export {
+  ACTIVE_LOCALE_ROUTES as LOCALES,
+  getActiveLocaleOptions,
+  getLocaleConfig,
+  isActiveLocale,
+} from "@new-asinseed/contracts";
+export type { Locale, LocaleContentMap } from "@new-asinseed/contracts";

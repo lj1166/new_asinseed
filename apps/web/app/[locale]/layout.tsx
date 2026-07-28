@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { Work_Sans } from "next/font/google";
 
 import "../globals.css";
-import { LOCALES, type Locale } from "@/lib/locales";
+import { getLocaleConfig, isActiveLocale, LOCALES } from "@/lib/locales";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 
@@ -16,11 +17,7 @@ export function generateStaticParams() {
   return LOCALES.map((locale) => ({ locale }));
 }
 
-function resolveHtmlLang(locale: string): string {
-  // Legacy pages literally emit <html lang="zh"> for cn and <html lang="en">
-  // for en — preserved verbatim rather than using the "zh-cn" locale code.
-  return locale === "zh-cn" ? "zh" : "en";
-}
+export const dynamicParams = false;
 
 export default async function LocaleLayout({
   children,
@@ -29,13 +26,17 @@ export default async function LocaleLayout({
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
 }) {
-  const { locale } = await params;
+  const { locale: rawLocale } = await params;
+  if (!isActiveLocale(rawLocale)) notFound();
+  const locale = rawLocale;
+  const localeConfig = getLocaleConfig(locale);
+
   return (
-    <html lang={resolveHtmlLang(locale)}>
+    <html lang={localeConfig.htmlLang}>
       <body className={workSans.variable}>
-        <SiteHeader locale={locale as Locale} />
+        <SiteHeader locale={locale} />
         {children}
-        <SiteFooter locale={locale as Locale} />
+        <SiteFooter locale={locale} />
       </body>
     </html>
   );

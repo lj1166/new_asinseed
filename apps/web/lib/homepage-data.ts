@@ -1,7 +1,7 @@
 import type { HomepageFaqEntry, HomepageTestimonialEntry } from "@new-asinseed/contracts";
 
 import { HOMEPAGE_FAQ_SEED, HOMEPAGE_TESTIMONIALS_SEED } from "./homepage-content";
-import type { Locale } from "./locales";
+import { getLocaleConfig, type Locale } from "./locales";
 import { getSanityClient } from "./sanity-client";
 
 export async function getHomepageFaq(locale: Locale): Promise<HomepageFaqEntry[]> {
@@ -13,7 +13,7 @@ export async function getHomepageFaq(locale: Locale): Promise<HomepageFaqEntry[]
   try {
     const entries = await client.fetch<HomepageFaqEntry[]>(
       `*[_type == "homepageFaqEntry" && locale == $locale] | order(order asc){ locale, question, answer, order }`,
-      { locale },
+      { locale: getLocaleConfig(locale).sanityLocale },
     );
     return entries.length > 0 ? entries : HOMEPAGE_FAQ_SEED[locale];
   } catch {
@@ -37,7 +37,7 @@ export async function getHomepageTestimonials(locale: Locale): Promise<HomepageT
         "avatarUrl": avatar.asset->url,
         order
       }`,
-      { locale },
+      { locale: getLocaleConfig(locale).sanityLocale },
     );
     return entries.length > 0 ? entries : HOMEPAGE_TESTIMONIALS_SEED[locale];
   } catch {
