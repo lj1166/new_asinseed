@@ -45,6 +45,10 @@ test("cn homepage is the rebuilt research entry rather than the legacy search-an
   await expect(page.getByRole("link", { name: "了解反查方法" }).first()).toHaveAttribute("href", "#how-it-works");
   await expect(page.getByTestId("research-workbench")).toContainText("关键词研究工作台");
   await expect(page.getByTestId("research-workbench")).toContainText("不展示或承诺真实查询结果");
+  await expect(page.getByTestId("research-signal-detail")).toHaveText("研究对象");
+  await page.getByTestId("research-signal-1").click();
+  await expect(page.getByTestId("research-signal-1")).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByTestId("research-signal-detail")).toHaveText("关联信号");
   await expect(page.locator("#scenarios")).toContainText("把关键词研究放回真实的业务问题里");
   await expect(page.locator("#how-it-works")).toContainText("什么是 ASIN 反查？");
   await expect(page.getByText("合作伙伴")).toHaveCount(0);
