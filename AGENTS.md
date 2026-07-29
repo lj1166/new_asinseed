@@ -22,6 +22,8 @@
 ## Conventions
 技术栈已在 SDD §2 定案，非本仓库自行决定：Next.js App Router + TypeScript strict；Tailwind + shadcn/ui（组件代码复制入仓库，非 npm 依赖）；Zod 做 BFF 契约；pnpm。真实编码细节（目录内约定、命名）在 Stage 0/P3 首次落地页面时确立，届时回填本节。`Development_Process/` 与 `.claude/skills/` 下的文档统一使用中文撰写，专业术语/标识符（技术栈专有名词、Stage/P1-P4/HITL 等流程词、schema 字段名、文件路径、D-XXX/ADR-XXX 编号）保留英文。
 
+**品牌视觉基线**：ASINSeed 的唯一主品牌色是 `#FF9200`。它必须通过集中设计 token 用于主 CTA、焦点状态、品牌识别与关键强调；深色中性色用于正文与深色承载面，确保小字号文字对比度。不得把旧版青绿、蓝紫或任意新色作为并列主色；品牌主色不等于整页铺橙，页面仍按角色保持信息层级与可读性。
+
 ## Boundaries
 **本地可逆改动默认执行；涉及生产内容、真实用户/支付/旧后端、线上 URL/流量或不可恢复删除时必须先获人工批准。**
 

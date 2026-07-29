@@ -2,12 +2,13 @@
 
 ## 定位与边界
 
-本标准是对已通过验收的试点页（`index.jsp` → `/en`、`/zh-cn`）做的**一次性、加时打分的技术 SEO 深度审计**，不是新建的常设 skill，也不替代主提示词 §2.3 的十项统一验收器——`index.jsp` 已凭该验收器判定"试点页验收通过"（见 `migration/reports/report-pilot-index.md`），本标准不重新裁定那个结论。
+本标准是对已通过验收的试点页做的**按需技术 SEO/GEO 深度审计**，不是新建的常设 skill，也不替代主提示词的统一验收器。当前语言底座仅启用 `/cn`；历史 `/en`、`/zh-cn` 报告只作为旧口径证据，不用于当前路由结论。
 
 关系说明：
 - 十项验收器中与 SEO 直接相关的第 1/3/4/10 项已 PASS/N/A，本标准**直接引用**其证据而不重新打分，只在"确认性复核"小节里做一次轻量复核（见 C3）。
 - 本标准补充验收器**未覆盖**的技术 SEO 面：meta description 质量、hreflang 完整性、OG 完整性、结构化数据(JSON-LD)的存在性与正确性、alt 文本、内部链接健康度、robots/sitemap 一致性、感知性能代理指标（无 Lighthouse 工具，用 preview_network/preview_eval 做代理观测）。
 - 本文档产出后是否需要把它固化为 `.claude/skills/seo-scoring` 是本轮任务的独立问题（见 `STATE.md` 现有决定：仅当验收器证明不够用时才建），在两份评分报告完成后另行回答，不在本标准内预先决定。
+- **GEO 口径（2026-07-29 校正）**：此处的 GEO 只衡量页面具备被生成式搜索发现、理解和引用的资格，不承诺排名或引用。Google 官方说明其生成式搜索仍使用核心搜索质量与排名系统；可抓取可索引、独特且有价值的内容、清晰结构和良好体验优先于任何“AI 特殊文件”。参见 [Google AI 搜索优化指南](https://developers.google.com/search/docs/fundamentals/ai-optimization-guide)。
 
 ## 计分规则
 
@@ -25,19 +26,19 @@
 |---|---|---|
 | A1 页面级 robots 指令与 `IndexDecision.index` 一致（本页应为 index） | 5 | `preview_eval` 读 `document.querySelector('meta[name="robots"]')`，或确认其缺失（缺失等同 index,follow 默认值，需明确记录是"未显式声明"还是"显式声明 index"） |
 | A2 `sitemap.xml` 包含本路由，且与 `IndexDecision.inSitemap` 一致 | 5 | `preview_network` 或直接请求 `/sitemap.xml`，`preview_eval` 里用 `fetch('/sitemap.xml').then(r=>r.text())` 搜索本路由 |
-| A3 `robots.txt` 未误挡本路由 | 5 | 同上方式 `fetch('/robots.txt')`，检查 `Disallow` 规则是否覆盖 `/en`、`/zh-cn` |
+| A3 `robots.txt` 未误挡本路由 | 5 | 同上方式 `fetch('/robots.txt')`，检查 `Disallow` 规则是否覆盖当前受审路由（当前为 `/cn`） |
 
 ### B. Canonical 与 Hreflang（20 分）
 | 子项 | 分值 | 判定方法 |
 |---|---|---|
 | B1 canonical 存在、自指、绝对 URL、无追踪参数 | 8 | `preview_inspect` 或 `preview_eval` 读 `link[rel=canonical]` 的 `href` |
-| B2 hreflang 三件套齐全且互反（en/zh-cn/x-default） | 12 | `preview_eval` 读全部 `link[rel=alternate][hreflang]`，交叉核对 `/en` 页与 `/zh-cn` 页两边的输出互相指向对方 |
+| B2 语言标注与当前发布策略一致 | 12 | 单语言阶段应无指向 planned locale 的 hreflang/x-default；多语言阶段再用 `preview_eval` 读全部 `link[rel=alternate][hreflang]` 并交叉核对互指 |
 
 ### C. Metadata 内容质量（20 分）
 | 子项 | 分值 | 判定方法 |
 |---|---|---|
-| C1 `<title>` 存在、唯一、长度合理（约 50–60 字符）、locale 相符 | 8 | `preview_eval`：`document.title` |
-| C2 meta description 存在、长度合理（约 150–160 字符）、非空洞/非重复 | 8 | `preview_eval` 读 `meta[name=description]` 的 `content` |
+| C1 `<title>` 存在、唯一、描述页面主意图且 locale 相符 | 8 | `preview_eval`：`document.title`；人工检查其是否准确、可区分、无堆词，不按固定字符数打分 |
+| C2 meta description 存在、准确、非空洞/非重复 | 8 | `preview_eval` 读 `meta[name=description]` 的 `content`；人工检查是否真实概括页面，不按固定字符数打分 |
 | C3 确认性复核：以上字段确系来自 DTO/Sanity 而非页面字面量硬编码（引用验收器第3项证据，本项只做一次轻量复核，非重新打分） | 4 | 对照 `report-pilot-index.md` 第3项证据；若与代码现状不符则升级为独立判定并说明 |
 
 ### D. Open Graph / 社交分享（10 分）
@@ -50,7 +51,7 @@
 | 子项 | 分值 | 判定方法 |
 |---|---|---|
 | E1 Organization JSON-LD 存在且为合法 JSON、字段无编造 | 5 | `preview_eval` 遍历 `script[type="application/ld+json"]`，`JSON.parse` 校验；若不存在，明确记为"缺失"（FAIL），不得猜测折中分 |
-| E2 FAQ JSON-LD 未被错误地基于占位内容生成（SDD §7.2 规则：仅当真实 FAQ 内容存在时才应输出） | 5 | 同上遍历结果里查找 `@type: FAQPage`；已知 FAQ 内容为占位（见 P4 报告已披露风险），此项 PASS 的条件是**没有**输出 FAQPage JSON-LD（若输出了，则是把占位内容当真实数据编入结构化数据，判 FAIL） |
+| E2 FAQ JSON-LD 仅基于真实且可见 FAQ 生成 | 5 | 同上遍历结果里查找 `@type: FAQPage`；逐项对比可见问答。FAQ 不存在时不应输出（PASS）；存在但用占位/不可见内容生成则 FAIL |
 
 ### F. 标题层级与内容结构（10 分）
 | 子项 | 分值 | 判定方法 |
@@ -80,21 +81,21 @@
 ### J. 结构化数据深度与实体权威性（10 分）
 | 子项 | 分值 | 判定方法 |
 |---|---|---|
-| J1 按页面类型应输出的结构化数据类型完整覆盖（品牌入口页至少 Organization；含真实 FAQ 内容的页面另需 FAQPage；含文章型内容的页面另需 Article），而非仅"JSON-LD 数量非零"这一粗粒度判断 | 5 | `preview_eval` 遍历 `script[type="application/ld+json"]`，`JSON.parse` 后逐个检查 `@type`，对照页面实际内容类型判断该有的类型是否齐全；缺失需明确指出缺的是哪个 `@type`，不得笼统记"部分缺失" |
-| J2 `sameAs` 实体权威关联：Organization（或对应实体）JSON-LD 是否声明 `sameAs` 指向权威主页/官方社交账号等可验证的外部身份标识 | 5 | 同上遍历结果中读取 `sameAs` 字段数组；若 Organization JSON-LD 本身不存在，本项直接判 FAIL（不可判 N/A，因为"该有实体声明而没有"本身就是缺陷，不是"不适用"） |
+| J1 按页面类型应输出的结构化数据类型完整覆盖（品牌入口页至少 `Organization` + `WebSite`；含真实 FAQ 内容的页面另需 `FAQPage`；含文章型内容的页面另需 `Article`），而非仅"JSON-LD 数量非零"这一粗粒度判断 | 5 | `preview_eval` 遍历 `script[type="application/ld+json"]`，`JSON.parse` 后逐个检查 `@type`，对照页面实际内容类型判断该有的类型是否齐全；缺失需明确指出缺的是哪个 `@type`，不得笼统记"部分缺失" |
+| J2 实体关系一致：`Organization` 有稳定 `@id`，`WebSite.publisher` 引用该实体；若存在可验证外部官方身份，`sameAs` 也须一致 | 5 | 读取 JSON-LD 中的 `@id` 与 `publisher.@id`；无已验证外部身份时 `sameAs` 不扣分也不得编造，若有则检查一致性 |
 
 ### K. AI 可引用性（15 分）
 | 子项 | 分值 | 判定方法 |
 |---|---|---|
 | K1 页面是否包含清晰、独立、可被生成式引擎直接摘录的"直接回答"段落（紧扣页面主题的问题，在 1-3 句内给出可独立成句引用的答案，不依赖上下文） | 5 | `preview_eval`/`preview_snapshot` 读取正文可见文本，人工判断是否存在这样一段可摘录文本（非自动化检测，需在报告证据栏引用具体段落原文或明确记录"未找到"） |
 | K2 内容新鲜度标注 + 作者/方法论可见性：页面是否可见地标注发布/更新时间，以及作者/方法论/数据来源说明（呼应 D-004 `ContentEntry`/`MaterialAsset` 的 `author`/`sourceCitations`/`methodology` 字段，但本项判定的是页面渲染层面是否可见，不是 schema 层面是否存在字段） | 5 | `preview_eval`/`preview_snapshot` 检查页面可见 DOM 中是否存在日期/作者/方法论相关文本节点或对应的 `datePublished`/`dateModified`/`author` JSON-LD 字段；两者任一可见即可判 PASS，均不存在判 FAIL，若页面类型本身无需此类信息（如纯工具页无"文章"属性）可判 N/A 并写明理由 |
-| K3 AI 爬虫规则与 `llms.txt`：`robots.txt` 是否对主流 AI 爬虫（`GPTBot`/`ClaudeBot`/`PerplexityBot` 等）有区别于 Googlebot 的显式规则（允许或有意限制，而非完全未考虑）；`llms.txt` 是否存在（2026-07-26 新增，响应 `report-agent-system-gaps.md` §3.6/提案⑥） | 5 | `preview_eval`/`fetch('/robots.txt')` 检查是否有针对上述 AI User-Agent 的独立 `User-agent:` 分组规则；`fetch('/llms.txt')` 检查是否存在（404 判 FAIL 而非 N/A——GEO 目标下这是应有的可选强项，缺失需如实记录，除非页面类型明确不适用） |
+| K3 公开内容未被抓取策略误挡 | 5 | `fetch('/robots.txt')` 确认通配规则允许公开页面，且没有与业务意图冲突的显式 AI crawler 禁令。单独 AI User-Agent 分组和 `llms.txt` 不是 Google AI 搜索排名/引用要求，不作为 PASS 条件；若其他服务另有需求，可记录为可选兼容项 |
 
 ### L. 转化路径可见性（10 分，2026-07-26 新增，响应 `report-agent-system-gaps.md` §3.6/提案⑥）
 | 子项 | 分值 | 判定方法 |
 |---|---|---|
-| L1 页面是否存在指向 Handoff/CTA 的可见入口，且目标域名在 `ARCHITECTURE.md`"关键不变量"规定的白名单内（当前为 `sellersprite.ai`） | 5 | `preview_eval` 遍历 `a[href]`，筛出指向白名单域名的链接，确认存在且 `href` 未被篡改/拼写错误 |
-| L2 该 CTA 在页面信息架构中的位置与数量符合"每页最多一个 CTA"不变量，且位置对用户决策路径合理可见（不是埋在页面底部无人可见的位置） | 5 | `preview_snapshot`/`preview_inspect` 确认页面内 Handoff/CTA 链接总数，及其相对首屏/主要内容区的位置；数量>1 或位置明显不合理判 FAIL/PARTIAL 并说明理由 |
+| L1 页面有与当前角色匹配的可见下一步：说明/入口页可指向已实现的内部研究步骤；真实决策页的外部 Handoff 必须指向 `ARCHITECTURE.md` 白名单（当前为 `sellersprite.ai`） | 5 | `preview_eval` 检查首屏/主要内容存在下一步入口；若属于 Handoff 页面，进一步验证外部 host；不得要求尚未实现工具页伪造外部转化链接 |
+| L2 页面只有一个清晰的主转化目标；为可达性/阅读节奏重复出现的同目标入口允许存在 | 5 | `preview_snapshot`/`preview_eval` 确认 CTA 不分裂到多个互相竞争的目标，且首屏或完成主要信息后可见；不要把“每页最多一个链接”误作规则 |
 
 ## 报告产出格式（供 Task #5 使用）
 
