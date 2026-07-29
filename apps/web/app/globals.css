@@ -3,15 +3,11 @@
 @tailwind utilities;
 
 /*
- * Design token baseline, Stage 1 rebrand (this batch). Replaces the earlier
- * draft tokens that were engineering estimates lifted from the legacy
- * Bootstrap theme (blue primary / purple secondary — a generic "SaaS
- * blue-purple gradient" look). This palette is a deliberate professional
- * choice, not extracted from any old-site source: deep teal as the primary
- * brand color (restrained, B2B-trustworthy, distinct from default SaaS
- * blue-purple), amber as a sparing accent for CTA emphasis/badges, and a
- * cool slate neutral scale for text/surfaces. HSL triples for shadcn's
- * hsl(var(--x)) convention.
+ * Brand baseline: #FF9200 is ASINSeed's sole primary brand colour. It is
+ * centralised here rather than copied into page components. Orange carries
+ * identity, primary actions and focus; the dark ink token carries long-form
+ * text and dark surfaces so small text keeps accessible contrast.
+ * HSL triples follow shadcn's hsl(var(--x)) convention.
  */
 @layer base {
   :root {
@@ -24,28 +20,32 @@
     --popover: 0 0% 100%;
     --popover-foreground: 215 25% 15%;
 
-    --primary: 173 80% 24%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 34 100% 50%;
+    --primary-foreground: 25 43% 11%;
 
-    --secondary: 215 25% 27%;
+    --secondary: 25 43% 11%;
     --secondary-foreground: 0 0% 100%;
 
     --muted: 210 20% 95%;
     --muted-foreground: 215 14% 42%;
 
-    --accent: 38 92% 50%;
-    --accent-foreground: 222 47% 11%;
+    --accent: 35 100% 95%;
+    --accent-foreground: 25 43% 11%;
 
     --destructive: 0 72% 42%;
     --destructive-foreground: 0 0% 100%;
 
     --border: 214 15% 88%;
     --input: 214 15% 88%;
-    --ring: 173 80% 24%;
+    --ring: 34 100% 50%;
 
     --radius: 0.5rem;
 
     /* Brand accents beyond shadcn's standard slots. */
+    --brand-ink: 25 43% 11%;
+    --brand-ink-foreground: 0 0% 100%;
+    --brand-soft: 35 100% 96%;
+    --brand-strong: 29 100% 34%;
     --brand-success: 142 71% 35%;
     --brand-warning: 28 90% 48%;
   }

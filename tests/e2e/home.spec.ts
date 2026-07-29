@@ -18,6 +18,26 @@ test("cn homepage exposes one H1 and a self canonical without inactive hreflang 
   await expect(page.locator('link[rel="alternate"][hreflang]')).toHaveCount(0);
 });
 
+test("cn homepage exposes a shareable image and connected brand entities", async ({ page, request }) => {
+  await page.goto("/cn");
+
+  const ogImageUrl = await page.locator('meta[property="og:image"]').getAttribute("content");
+  expect(ogImageUrl).toBeTruthy();
+  const ogImage = new URL(ogImageUrl!);
+  if (ogImage.pathname.endsWith("/cn/opengraph-image")) {
+    expect((await request.get(ogImage.pathname)).status()).toBe(200);
+  }
+
+  const jsonLd = await page.locator('script[type="application/ld+json"]').evaluateAll((scripts) =>
+    scripts.map((script) => JSON.parse(script.textContent ?? "{}")),
+  );
+  const organization = jsonLd.find((entry) => entry["@type"] === "Organization");
+  const website = jsonLd.find((entry) => entry["@type"] === "WebSite");
+  expect(organization?.["@id"]).toBeTruthy();
+  expect(website?.publisher?.["@id"]).toBe(organization?.["@id"]);
+  await expect(page.getByRole("heading", { level: 2, name: "什么是 ASIN 反查？" })).toBeVisible();
+});
+
 test("cn homepage is the rebuilt research entry rather than the legacy search-and-partner layout", async ({ page }) => {
   await page.goto("/cn");
 

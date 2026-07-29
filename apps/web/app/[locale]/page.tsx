@@ -47,7 +47,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const title = dedupeTitle(homepageSeo?.seo?.title ?? HOME_FALLBACK.title, brandName);
   const description = homepageSeo?.seo?.description ?? HOME_FALLBACK.description;
   const canonical = homepageSeo?.seo?.canonicalOverride ?? `${siteUrl}/${locale}`;
-  const ogImageUrl = homepageSeo?.seo?.ogImageUrl;
+  const ogImageUrl = homepageSeo?.seo?.ogImageUrl ?? `${siteUrl}/${locale}/opengraph-image`;
   const localeConfig = getLocaleConfig(locale);
 
   return {
@@ -73,7 +73,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       locale: localeConfig.ogLocale,
       url: canonical,
       siteName: brandName,
-      ...(ogImageUrl ? { images: [{ url: ogImageUrl, width: 1200, height: 630, alt: brandName }] } : {}),
+      images: [{ url: ogImageUrl, width: 1200, height: 630, alt: `${brandName}｜亚马逊关键词研究` }],
     },
   };
 }
@@ -95,12 +95,26 @@ export default async function HomePage({ params }: PageProps) {
   const heroSubheading = homepageSeo?.heroSubheading?.trim() || HOME_FALLBACK.heroSubheading;
   const siteUrl = getSiteUrl();
   const brandName = siteSettings?.brandName ?? "AsinSeed";
+  const metadataDescription = homepageSeo?.seo?.description ?? HOME_FALLBACK.description;
+  const localeConfig = getLocaleConfig(locale);
+  const organizationId = `${siteUrl}/#organization`;
   const organizationJsonLd = {
     "@context": "https://schema.org",
     "@type": "Organization",
+    "@id": organizationId,
     name: brandName,
     url: siteUrl,
+    description: metadataDescription,
     ...(siteSettings?.sameAs?.length ? { sameAs: siteSettings.sameAs } : {}),
+  };
+  const websiteJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${siteUrl}/#website`,
+    name: brandName,
+    url: siteUrl,
+    inLanguage: localeConfig.htmlLang,
+    publisher: { "@id": organizationId },
   };
   const faqJsonLd = faq.length
     ? {
@@ -117,19 +131,20 @@ export default async function HomePage({ params }: PageProps) {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />
       {faqJsonLd ? <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} /> : null}
       <main>
-        <section className="relative isolate overflow-hidden bg-[#082f2d] py-16 text-white sm:py-24">
-          <div aria-hidden="true" className="absolute inset-0 -z-10 opacity-70 [background:radial-gradient(circle_at_16%_0%,rgba(20,184,166,.28),transparent_35%),radial-gradient(circle_at_85%_30%,rgba(251,191,36,.16),transparent_32%)]" />
+        <section className="relative isolate overflow-hidden bg-brand-ink py-16 text-white sm:py-24">
+          <div aria-hidden="true" className="absolute inset-0 -z-10 opacity-70 [background:radial-gradient(circle_at_16%_0%,rgba(255,146,0,.38),transparent_35%),radial-gradient(circle_at_85%_30%,rgba(255,196,100,.16),transparent_32%)]" />
           <Container className="grid items-center gap-12 lg:grid-cols-[1.06fr_.94fr]">
             <div className="max-w-2xl">
-              <p className="mb-5 inline-flex rounded-full border border-white/20 bg-white/10 px-3 py-1 text-sm font-medium text-teal-100">
+              <p className="mb-5 inline-flex rounded-full border border-white/20 bg-white/10 px-3 py-1 text-sm font-medium text-primary">
                 {content.eyebrow}
               </p>
               <h1 className="text-4xl font-semibold tracking-[-0.03em] sm:text-5xl lg:text-6xl">{heroHeading}</h1>
               <p className="mt-6 max-w-xl text-lg leading-8 text-slate-200">{heroSubheading}</p>
               <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-                <a href="#how-it-works" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-lg bg-amber-300 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-amber-200">
+                <a href="#how-it-works" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-lg bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90">
                   {content.primaryCtaLabel}
                   <ArrowRight aria-hidden="true" className="h-4 w-4" />
                 </a>
@@ -142,14 +157,14 @@ export default async function HomePage({ params }: PageProps) {
             <div aria-label="关键词研究路径示意" className="rounded-2xl border border-white/15 bg-slate-950/35 p-5 shadow-2xl shadow-black/20 backdrop-blur sm:p-7">
               <div className="flex items-center justify-between border-b border-white/10 pb-4 text-sm text-slate-300">
                 <span>研究路径</span>
-                <span className="rounded-full bg-teal-300/15 px-2.5 py-1 text-xs text-teal-100">可解释的下一步</span>
+                <span className="rounded-full bg-primary/15 px-2.5 py-1 text-xs text-primary">可解释的下一步</span>
               </div>
               <div className="mt-6 space-y-3">
                 {["明确研究对象", "连接竞品与搜索意图", "形成待验证的假设"].map((label, index) => (
                   <div key={label} className="flex items-center gap-4 rounded-xl border border-white/10 bg-white/[.06] p-4">
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-teal-300/15 text-sm font-semibold text-teal-100">{index + 1}</span>
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/15 text-sm font-semibold text-primary">{index + 1}</span>
                     <span className="text-sm font-medium text-slate-100">{label}</span>
-                    {index < 2 ? <ArrowRight aria-hidden="true" className="ml-auto h-4 w-4 text-teal-200/70" /> : <SearchCheck aria-hidden="true" className="ml-auto h-4 w-4 text-amber-200" />}
+                    {index < 2 ? <ArrowRight aria-hidden="true" className="ml-auto h-4 w-4 text-primary/70" /> : <SearchCheck aria-hidden="true" className="ml-auto h-4 w-4 text-primary" />}
                   </div>
                 ))}
               </div>
@@ -165,7 +180,7 @@ export default async function HomePage({ params }: PageProps) {
               const Icon = scenarioIcons[index] ?? Compass;
               return (
                 <article key={scenario.title} className="rounded-2xl border border-border bg-card p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
-                  <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary"><Icon aria-hidden="true" className="h-5 w-5" /></span>
+                  <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/15 text-brand-strong"><Icon aria-hidden="true" className="h-5 w-5" /></span>
                   <h2 className="mt-6 text-xl font-semibold tracking-tight">{scenario.title}</h2>
                   <p className="mt-3 text-sm leading-6 text-muted-foreground">{scenario.body}</p>
                 </article>
@@ -183,8 +198,8 @@ export default async function HomePage({ params }: PageProps) {
                 return (
                   <li key={step.title} className="rounded-2xl border bg-background p-5">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-semibold text-primary">0{index + 1}</span>
-                      <Icon aria-hidden="true" className="h-5 w-5 text-primary" />
+                      <span className="text-sm font-semibold text-brand-strong">0{index + 1}</span>
+                      <Icon aria-hidden="true" className="h-5 w-5 text-brand-strong" />
                     </div>
                     <h2 className="mt-8 text-lg font-semibold">{step.title}</h2>
                     <p className="mt-2 text-sm leading-6 text-muted-foreground">{step.body}</p>
@@ -193,12 +208,12 @@ export default async function HomePage({ params }: PageProps) {
               })}
             </ol>
           </div>
-          <aside className="mt-10 rounded-2xl border border-teal-900/10 bg-teal-950 px-6 py-5 text-teal-50 sm:flex sm:items-center sm:justify-between sm:gap-8">
+          <aside aria-labelledby="asin-research-definition" className="mt-10 rounded-2xl border border-brand-ink/10 bg-brand-ink px-6 py-5 text-brand-ink-foreground sm:flex sm:items-center sm:justify-between sm:gap-8">
             <div>
-              <p className="text-sm font-semibold text-teal-100">什么是 ASIN 反查？</p>
-              <p className="mt-1 text-sm leading-6 text-teal-50/80">它是一种从具体商品线索出发，辅助研究相关搜索意图与关键词方向的方法；它不替代对市场、产品和用户需求的判断。</p>
+              <h2 id="asin-research-definition" className="text-sm font-semibold text-primary">什么是 ASIN 反查？</h2>
+              <p className="mt-1 text-sm leading-6 text-white/80">它是一种从具体商品线索出发，辅助研究相关搜索意图与关键词方向的方法；它不替代对市场、产品和用户需求的判断。</p>
             </div>
-            <a href="#scenarios" className="mt-4 inline-flex shrink-0 items-center gap-2 text-sm font-semibold text-amber-200 hover:text-amber-100 sm:mt-0">查看适用场景 <ArrowRight aria-hidden="true" className="h-4 w-4" /></a>
+            <a href="#scenarios" className="mt-4 inline-flex shrink-0 items-center gap-2 text-sm font-semibold text-primary hover:text-orange-200 sm:mt-0">查看适用场景 <ArrowRight aria-hidden="true" className="h-4 w-4" /></a>
           </aside>
         </Section>
 
@@ -219,11 +234,11 @@ export default async function HomePage({ params }: PageProps) {
         <section className="bg-primary py-16 text-primary-foreground sm:py-20">
           <Container className="flex flex-col items-start justify-between gap-8 md:flex-row md:items-end">
             <div className="max-w-2xl">
-              <p className="text-sm font-semibold text-teal-100">{content.closingEyebrow}</p>
+              <p className="text-sm font-semibold text-brand-ink/80">{content.closingEyebrow}</p>
               <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">{content.closingTitle}</h2>
-              <p className="mt-4 text-base leading-7 text-teal-50/85">{content.closingDescription}</p>
+              <p className="mt-4 text-base leading-7 text-brand-ink/80">{content.closingDescription}</p>
             </div>
-            <a href="#how-it-works" className="inline-flex min-h-12 shrink-0 items-center gap-2 rounded-lg bg-white px-5 py-3 text-sm font-semibold text-primary transition hover:bg-teal-50">
+            <a href="#how-it-works" className="inline-flex min-h-12 shrink-0 items-center gap-2 rounded-lg bg-white px-5 py-3 text-sm font-semibold text-brand-ink transition hover:bg-brand-soft">
               {content.closingCtaLabel}
               <ArrowRight aria-hidden="true" className="h-4 w-4" />
             </a>

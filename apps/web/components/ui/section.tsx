@@ -37,7 +37,7 @@ function SectionHeader({ eyebrow, title, description, className, align = "left",
   return (
     <div className={cn("mb-10 max-w-2xl", align === "center" && "mx-auto text-center", className)}>
       {eyebrow ? (
-        <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-primary">{eyebrow}</p>
+        <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-brand-strong">{eyebrow}</p>
       ) : null}
       <Heading className="text-2xl font-semibold tracking-tight sm:text-3xl">{title}</Heading>
       {description ? <p className="mt-3 text-base text-muted-foreground">{description}</p> : null}
