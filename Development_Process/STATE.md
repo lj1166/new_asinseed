@@ -5,7 +5,7 @@
 - **P0 SEO 运营闭环已完成并通过运行时验证（2026-07-27，2026-07-28 语言底座修正）**：Sanity schema（seoObject/siteSettings/homepageSeo/contentEntry seo+noindex）、Zod contracts、前端 getHomepageSeo/getSiteSettings + page.tsx generateMetadata() 全部落地。当前仅简中 `cn` 入口启用，并正确读取 Sanity `zh-cn` 文档；既有英文文档保留在数据集中但不再被路由、Studio 下拉或 sitemap 提前暴露。
   - **发现并修复一个致命回归**：`apps/web/lib/sanity-client.ts` 的 `getSanityClient()` 读取的是 `SANITY_PROJECT_ID`/`SANITY_DATASET`，但 `.env.local` 实际定义的是 `NEXT_PUBLIC_SANITY_PROJECT_ID`/`NEXT_PUBLIC_SANITY_DATASET`——命名不一致导致该函数永远返回 `null`，SEO 与 FAQ/testimonials 的 Sanity 读取全部静默走代码兜底，此前"已完成"的说法实际从未在运行时验证过。已修复变量名并同步修正 `.env.local.example`。
   - **P4 运行时验证（真实执行，非纸面）**：当前 `/cn` 的 `document.title`/`<meta name="description">`/`<link rel="canonical">`/`og:site_name` 均确认来自已发布的 `homepageSeo-zh-cn` 文档（非代码兜底文案）；可见 H1/副标题也确认读取该文档。此前英文验证为历史证据，待简中页面验收后再按语言逐个恢复。
-  - 首页重构已新增并发布 `homepageContent-zh-cn` 与 3 条 `homepageFaqEntry`；场景/方法/CTA 和 FAQ 均已由 Sanity 消费。FAQ 不再使用占位 seed，且在真实 FAQ 存在时输出 `FAQPage` JSON-LD。客户评价仍无可核验条目，前台不展示该模块。
+  - 首页重构已新增并发布 `homepageContent-zh-cn` 与 3 条 `homepageFaqEntry`；场景/方法/CTA、首屏“研究工作台”与 FAQ 均由 Sanity 消费。首页视觉采用深色研究承载面 + `#FF9200` 关键强调，工作台仅解释研究路径且明确不展示真实查询结果；FAQ 不再使用占位 seed，且在真实 FAQ 存在时输出 `FAQPage` JSON-LD。客户评价仍无可核验条目，前台不展示该模块。
   - **运营可选操作**：可在 Studio 为 `homepageSeo-zh-cn` 上传 1200×630 页面专属 OG 图；未上传时前端使用已验证的 `#FF9200` 品牌 fallback，不再缺少 `og:image`。
 - 轨A：批次 0 已完成全站页面组合轻扫描（`mappings/page-map.md`）：77 个前台 JSP + 1 个优惠活动 JSP 被归并为页面组，49 个后台 JSP 已列 `exclude`；已形成候选页面组合与批次 1～5。`cn-index` 重构 P2/P3 与技术 P4 已完成，详见 `migration/reports/report-cn-homepage-rebuild.md`；下一步执行合并 `search.jsp` / `search_keywords.jsp` 的工具流 P1 与 Brief。Stage 2 尚未解锁。
 - 质量基线：历史 `/en` 63/100、`/zh-cn` 59/100 已不再代表当前 URL 契约；`/cn` 路由、canonical、sitemap、robots、FAQPage、`Organization`↔`WebSite` 实体关联、OG fallback 与 inactive locale 404 已由 e2e/HTTP 验证。首页的品牌/说明/转化角色已完成，实际收录与 AI 展示仍须在生产 Search Console 观察。
@@ -29,11 +29,11 @@
 
 > 更早记录：`archive/STATE-changelog-2026-07.md`。每条不超过 5 行；超过 5 条时先迁入当月 archive，再追加新记录。
 
-- 2026-07-28：完成 D-014 批次 0 全站轻扫描：77 个前台 JSP、1 个优惠活动 JSP 和 49 个后台 JSP 按业务/功能/页面角色归并；页面地图给出新站候选组合与批次 1～5，未读取全量 include/Controller，也未创建页面或 Schema。
 - 2026-07-28：完成 D-015 中文优先语言底座：共享语言注册表仅启用 `/cn`，根路径/导航/Studio/sitemap/canonical 全部收敛；`/en`、`/zh-cn` 等 inactive 路径 404，Playwright 7/7、桌面/移动实页与 Studio HTTP 200 已验证。搜索/插件/帮助入口不再跳往未迁移 404。
 - 2026-07-28：沉淀 D-016：当用户/负责人已明确新 SaaS 重构、引流获客转化、SEO/GEO 与运营目标时，Brief 是设计记录而非默认停工门；首页已获得 P2/P3 实施授权，未证实事实只限制对应主张。
 - 2026-07-28：完成 `cn-index` 重构 P2/P3/技术 P4：新增并发布首页运营内容与 FAQ，正式替换 Sanity 测试 metadata/H1，移除旧 JSP 式搜索/评价/伙伴/视频/外链布局；`pnpm build`、typecheck 与 Playwright 9/9 通过，唯一 Layer C FAIL 为缺 OG 图。
 - 2026-07-29：完成品牌与 SEO/GEO 复核：主色统一为 `#FF9200`，新增品牌 OG fallback、`Organization`↔`WebSite` 关系和可定位直接回答；校正 GEO 规则，取消将 `llms.txt`/专用 AI bot 规则作为硬门槛。typecheck、build、Playwright 10/10 与桌面实页审查通过。
+- 2026-07-29：首页升级为“研究工作台”视觉：Sanity `homepageContent` 增加分组和 5 个工作台字段，前台以不伪造工具结果的任务预览替换静态路径卡；兼容已发布旧内容的 fallback merge。typecheck、build、Playwright 10/10、桌面与 390px 实页均通过；本地 Next `:3000`、Studio `:3333` 均返回 200。
 
 ## 尝试与失败记录
 

@@ -5,6 +5,27 @@
   "eyebrow": "面向亚马逊卖家的研究起点",
   "primaryCtaLabel": "了解反查方法",
   "secondaryCtaLabel": "查看适用场景",
+  "researchPanelEyebrow": "关键词研究工作台",
+  "researchPanelTitle": "把一个模糊问题，整理成可研究的方向",
+  "researchPanelDescription": "从 ASIN、商品词或竞品场景开始，先建立研究对象与判断框架。",
+  "researchSignals": [
+    {
+      "_key": "research-target",
+      "title": "研究对象",
+      "body": "明确要分析的 ASIN、商品词或竞品场景。"
+    },
+    {
+      "_key": "connected-signals",
+      "title": "关联信号",
+      "body": "把商品表达、竞品线索与搜索意图放在同一视角。"
+    },
+    {
+      "_key": "next-hypothesis",
+      "title": "下一步假设",
+      "body": "沉淀值得进一步验证的关键词与行动方向。"
+    }
+  ],
+  "researchPanelNotice": "这是研究路径示意，不展示或承诺真实查询结果。",
   "scenariosEyebrow": "从问题开始",
   "scenariosTitle": "把关键词研究放回真实的业务问题里",
   "scenariosDescription": "先明确要理解的竞品与用户意图，再决定下一步的研究动作，而不是从一串孤立关键词开始。",

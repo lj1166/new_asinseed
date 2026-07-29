@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ArrowRight, Compass, FileSearch, ListChecks, SearchCheck, Sparkles } from "lucide-react";
+import { ArrowRight, Compass, Crosshair, FileSearch, Layers3, Lightbulb, ListChecks, SearchCheck, Sparkles } from "lucide-react";
 import { notFound } from "next/navigation";
 
 import { Container } from "@/components/ui/container";
@@ -80,6 +80,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 const scenarioIcons = [Compass, FileSearch, SearchCheck];
 const workflowIcons = [FileSearch, ListChecks, Sparkles];
+const researchSignalIcons = [Crosshair, Layers3, Lightbulb];
 
 export default async function HomePage({ params }: PageProps) {
   const { locale: rawLocale } = await params;
@@ -134,42 +135,86 @@ export default async function HomePage({ params }: PageProps) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />
       {faqJsonLd ? <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} /> : null}
       <main>
-        <section className="relative isolate overflow-hidden bg-brand-ink py-16 text-white sm:py-24">
-          <div aria-hidden="true" className="absolute inset-0 -z-10 opacity-70 [background:radial-gradient(circle_at_16%_0%,rgba(255,146,0,.38),transparent_35%),radial-gradient(circle_at_85%_30%,rgba(255,196,100,.16),transparent_32%)]" />
-          <Container className="grid items-center gap-12 lg:grid-cols-[1.06fr_.94fr]">
+        <section className="relative isolate overflow-hidden bg-brand-ink py-16 text-white sm:py-24 lg:py-28">
+          <div aria-hidden="true" className="absolute inset-0 -z-10 opacity-80 [background:radial-gradient(circle_at_12%_0%,rgba(255,146,0,.42),transparent_32%),radial-gradient(circle_at_92%_28%,rgba(255,212,144,.16),transparent_28%)]" />
+          <div aria-hidden="true" className="absolute inset-x-0 bottom-0 -z-10 h-1/2 opacity-20 [background-image:linear-gradient(rgba(255,255,255,.12)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.12)_1px,transparent_1px)] [background-size:44px_44px] [mask-image:linear-gradient(to_bottom,transparent,black)]" />
+          <Container className="grid items-center gap-12 lg:grid-cols-[.95fr_1.05fr] lg:gap-16">
             <div className="max-w-2xl">
-              <p className="mb-5 inline-flex rounded-full border border-white/20 bg-white/10 px-3 py-1 text-sm font-medium text-primary">
-                {content.eyebrow}
-              </p>
-              <h1 className="text-4xl font-semibold tracking-[-0.03em] sm:text-5xl lg:text-6xl">{heroHeading}</h1>
-              <p className="mt-6 max-w-xl text-lg leading-8 text-slate-200">{heroSubheading}</p>
+              <div className="mb-6 flex flex-wrap items-center gap-3">
+                <p className="inline-flex rounded-full border border-white/15 bg-white/10 px-3 py-1 text-sm font-medium text-primary">
+                  {content.eyebrow}
+                </p>
+                <span className="text-xs font-medium tracking-wide text-white/55">RESEARCH-FIRST</span>
+              </div>
+              <h1 className="max-w-xl text-4xl font-semibold leading-[1.08] tracking-[-0.045em] sm:text-5xl lg:text-6xl">{heroHeading}</h1>
+              <p className="mt-6 max-w-xl text-lg leading-8 text-white/72">{heroSubheading}</p>
               <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-                <a href="#how-it-works" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-lg bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90">
+                <a href="#how-it-works" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-lg bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition hover:-translate-y-0.5 hover:bg-primary/90">
                   {content.primaryCtaLabel}
                   <ArrowRight aria-hidden="true" className="h-4 w-4" />
                 </a>
-                <a href="#scenarios" className="inline-flex min-h-12 items-center justify-center rounded-lg border border-white/25 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10">
+                <a href="#scenarios" className="inline-flex min-h-12 items-center justify-center rounded-lg border border-white/20 bg-white/[.03] px-5 py-3 text-sm font-semibold text-white transition hover:border-white/35 hover:bg-white/10">
                   {content.secondaryCtaLabel}
                 </a>
               </div>
-            </div>
-
-            <div aria-label="关键词研究路径示意" className="rounded-2xl border border-white/15 bg-slate-950/35 p-5 shadow-2xl shadow-black/20 backdrop-blur sm:p-7">
-              <div className="flex items-center justify-between border-b border-white/10 pb-4 text-sm text-slate-300">
-                <span>研究路径</span>
-                <span className="rounded-full bg-primary/15 px-2.5 py-1 text-xs text-primary">可解释的下一步</span>
-              </div>
-              <div className="mt-6 space-y-3">
-                {["明确研究对象", "连接竞品与搜索意图", "形成待验证的假设"].map((label, index) => (
-                  <div key={label} className="flex items-center gap-4 rounded-xl border border-white/10 bg-white/[.06] p-4">
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/15 text-sm font-semibold text-primary">{index + 1}</span>
-                    <span className="text-sm font-medium text-slate-100">{label}</span>
-                    {index < 2 ? <ArrowRight aria-hidden="true" className="ml-auto h-4 w-4 text-primary/70" /> : <SearchCheck aria-hidden="true" className="ml-auto h-4 w-4 text-primary" />}
+              <div className="mt-10 grid max-w-xl grid-cols-3 divide-x divide-white/10 border-y border-white/10 py-4 text-sm">
+                {[
+                  ["01", "从对象开始"],
+                  ["02", "连接信号"],
+                  ["03", "形成假设"],
+                ].map(([index, label]) => (
+                  <div key={index} className="px-3 first:pl-0">
+                    <span className="block font-mono text-xs text-primary">{index}</span>
+                    <span className="mt-1 block text-xs text-white/70 sm:text-sm">{label}</span>
                   </div>
                 ))}
               </div>
-              <p className="mt-5 text-sm leading-6 text-slate-300">先把问题说清楚，再决定需要研究什么。真实查询任务会在结果工具重构完成后独立承接。</p>
             </div>
+
+            <section data-testid="research-workbench" aria-label="关键词研究工作台示意" className="relative">
+              <div aria-hidden="true" className="absolute -inset-4 -z-10 rounded-[2rem] bg-primary/20 blur-3xl" />
+              <div className="rounded-[1.5rem] border border-white/15 bg-[#24180f]/90 p-4 shadow-2xl shadow-black/30 backdrop-blur sm:p-6">
+                <div className="flex items-center justify-between gap-4 border-b border-white/10 pb-4">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[.16em] text-primary">{content.researchPanelEyebrow}</p>
+                    <h2 className="mt-1 text-lg font-semibold text-white">{content.researchPanelTitle}</h2>
+                  </div>
+                  <span className="shrink-0 rounded-full border border-primary/25 bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary">方法预览</span>
+                </div>
+
+                <p className="mt-4 text-sm leading-6 text-white/62">{content.researchPanelDescription}</p>
+                <div className="mt-5 rounded-xl border border-white/10 bg-black/20 p-3 sm:p-4">
+                  <div className="flex items-center justify-between gap-3 text-xs text-white/50">
+                    <span>研究入口</span>
+                    <span className="font-mono text-primary/80">ASIN / TERM / COMPETITOR</span>
+                  </div>
+                  <div className="mt-3 flex flex-wrap gap-2" aria-label="研究对象类型">
+                    {["ASIN", "商品词", "竞品场景"].map((item, index) => (
+                      <span key={item} className={`rounded-md border px-3 py-2 text-xs font-medium ${index === 0 ? "border-primary/35 bg-primary/10 text-primary" : "border-white/10 bg-white/[.04] text-white/65"}`}>
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <ol className="mt-4 space-y-2.5">
+                  {content.researchSignals.map((signal, index) => {
+                    const Icon = researchSignalIcons[index] ?? Crosshair;
+                    return (
+                      <li key={signal.title} className="group flex items-center gap-3 rounded-xl border border-white/10 bg-white/[.035] p-3.5 transition hover:border-primary/30 hover:bg-white/[.06]">
+                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary"><Icon aria-hidden="true" className="h-4 w-4" /></span>
+                        <span className="min-w-0">
+                          <span className="block text-sm font-semibold text-white">{signal.title}</span>
+                          <span className="mt-0.5 block text-xs leading-5 text-white/55">{signal.body}</span>
+                        </span>
+                        <span className="ml-auto font-mono text-xs text-white/25">0{index + 1}</span>
+                      </li>
+                    );
+                  })}
+                </ol>
+                <p className="mt-4 rounded-lg border border-primary/15 bg-primary/[.06] px-3 py-2 text-xs leading-5 text-white/58">{content.researchPanelNotice}</p>
+              </div>
+            </section>
           </Container>
         </section>
 
@@ -179,10 +224,12 @@ export default async function HomePage({ params }: PageProps) {
             {content.scenarios.map((scenario, index) => {
               const Icon = scenarioIcons[index] ?? Compass;
               return (
-                <article key={scenario.title} className="rounded-2xl border border-border bg-card p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+                <article key={scenario.title} className="group relative overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-[0_12px_36px_-28px_rgba(45,29,12,.45)] transition duration-300 hover:-translate-y-1 hover:border-primary/35 hover:shadow-[0_18px_45px_-26px_rgba(255,146,0,.35)]">
+                  <span aria-hidden="true" className="absolute right-5 top-4 font-mono text-4xl font-semibold tracking-[-.08em] text-brand-ink/[.055]">0{index + 1}</span>
                   <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/15 text-brand-strong"><Icon aria-hidden="true" className="h-5 w-5" /></span>
                   <h2 className="mt-6 text-xl font-semibold tracking-tight">{scenario.title}</h2>
                   <p className="mt-3 text-sm leading-6 text-muted-foreground">{scenario.body}</p>
+                  <span className="mt-6 inline-flex items-center gap-1 text-xs font-semibold text-brand-strong">研究视角 <ArrowRight aria-hidden="true" className="h-3.5 w-3.5 transition group-hover:translate-x-0.5" /></span>
                 </article>
               );
             })}
@@ -190,31 +237,33 @@ export default async function HomePage({ params }: PageProps) {
         </Section>
 
         <Section id="how-it-works" tone="muted">
-          <div className="grid gap-10 lg:grid-cols-[.8fr_1.2fr] lg:items-end">
-            <SectionHeader eyebrow={content.workflowEyebrow} title={content.workflowTitle} description={content.workflowDescription} className="mb-0" />
-            <ol className="grid gap-4 sm:grid-cols-3">
-              {content.workflowSteps.map((step, index) => {
-                const Icon = workflowIcons[index] ?? Sparkles;
-                return (
-                  <li key={step.title} className="rounded-2xl border bg-background p-5">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-semibold text-brand-strong">0{index + 1}</span>
-                      <Icon aria-hidden="true" className="h-5 w-5 text-brand-strong" />
-                    </div>
-                    <h2 className="mt-8 text-lg font-semibold">{step.title}</h2>
-                    <p className="mt-2 text-sm leading-6 text-muted-foreground">{step.body}</p>
-                  </li>
-                );
-              })}
-            </ol>
-          </div>
-          <aside aria-labelledby="asin-research-definition" className="mt-10 rounded-2xl border border-brand-ink/10 bg-brand-ink px-6 py-5 text-brand-ink-foreground sm:flex sm:items-center sm:justify-between sm:gap-8">
-            <div>
-              <h2 id="asin-research-definition" className="text-sm font-semibold text-primary">什么是 ASIN 反查？</h2>
-              <p className="mt-1 text-sm leading-6 text-white/80">它是一种从具体商品线索出发，辅助研究相关搜索意图与关键词方向的方法；它不替代对市场、产品和用户需求的判断。</p>
+          <div className="overflow-hidden rounded-[1.75rem] bg-brand-ink px-6 py-8 text-white sm:px-10 sm:py-12">
+            <div className="grid gap-10 lg:grid-cols-[.8fr_1.2fr] lg:items-end">
+              <SectionHeader eyebrow={content.workflowEyebrow} title={content.workflowTitle} description={content.workflowDescription} className="mb-0 [&_h2]:text-white [&_p]:text-white/65 [&_p]:leading-7 [&_p]:sm:text-lg" />
+              <ol className="grid gap-3 sm:grid-cols-3">
+                {content.workflowSteps.map((step, index) => {
+                  const Icon = workflowIcons[index] ?? Sparkles;
+                  return (
+                    <li key={step.title} className="rounded-2xl border border-white/10 bg-white/[.06] p-5">
+                      <div className="flex items-center justify-between">
+                        <span className="font-mono text-sm font-semibold text-primary">0{index + 1}</span>
+                        <Icon aria-hidden="true" className="h-5 w-5 text-primary" />
+                      </div>
+                      <h2 className="mt-8 text-lg font-semibold">{step.title}</h2>
+                      <p className="mt-2 text-sm leading-6 text-white/62">{step.body}</p>
+                    </li>
+                  );
+                })}
+              </ol>
             </div>
-            <a href="#scenarios" className="mt-4 inline-flex shrink-0 items-center gap-2 text-sm font-semibold text-primary hover:text-orange-200 sm:mt-0">查看适用场景 <ArrowRight aria-hidden="true" className="h-4 w-4" /></a>
-          </aside>
+            <aside aria-labelledby="asin-research-definition" className="mt-8 border-t border-white/10 pt-6 sm:flex sm:items-center sm:justify-between sm:gap-8">
+              <div>
+                <h2 id="asin-research-definition" className="text-sm font-semibold text-primary">什么是 ASIN 反查？</h2>
+                <p className="mt-1 max-w-3xl text-sm leading-6 text-white/70">它是一种从具体商品线索出发，辅助研究相关搜索意图与关键词方向的方法；它不替代对市场、产品和用户需求的判断。</p>
+              </div>
+              <a href="#scenarios" className="mt-4 inline-flex shrink-0 items-center gap-2 text-sm font-semibold text-primary hover:text-orange-200 sm:mt-0">查看适用场景 <ArrowRight aria-hidden="true" className="h-4 w-4" /></a>
+            </aside>
+          </div>
         </Section>
 
         {faq.length > 0 ? (
@@ -231,7 +280,8 @@ export default async function HomePage({ params }: PageProps) {
           </Section>
         ) : null}
 
-        <section className="bg-primary py-16 text-primary-foreground sm:py-20">
+        <section className="relative overflow-hidden bg-primary py-16 text-primary-foreground sm:py-20">
+          <div aria-hidden="true" className="absolute right-[-6rem] top-[-7rem] h-64 w-64 rounded-full border-[36px] border-white/20" />
           <Container className="flex flex-col items-start justify-between gap-8 md:flex-row md:items-end">
             <div className="max-w-2xl">
               <p className="text-sm font-semibold text-brand-ink/80">{content.closingEyebrow}</p>

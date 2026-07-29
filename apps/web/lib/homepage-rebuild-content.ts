@@ -14,6 +14,15 @@ export const HOMEPAGE_CONTENT_FALLBACK: LocaleContentMap<HomepageContent> = {
     eyebrow: "面向亚马逊卖家的研究起点",
     primaryCtaLabel: "了解反查方法",
     secondaryCtaLabel: "查看适用场景",
+    researchPanelEyebrow: "关键词研究工作台",
+    researchPanelTitle: "把一个模糊问题，整理成可研究的方向",
+    researchPanelDescription: "从 ASIN、商品词或竞品场景开始，先建立研究对象与判断框架。",
+    researchSignals: [
+      { title: "研究对象", body: "明确要分析的 ASIN、商品词或竞品场景。" },
+      { title: "关联信号", body: "把商品表达、竞品线索与搜索意图放在同一视角。" },
+      { title: "下一步假设", body: "沉淀值得进一步验证的关键词与行动方向。" },
+    ],
+    researchPanelNotice: "这是研究路径示意，不展示或承诺真实查询结果。",
     scenariosEyebrow: "从问题开始",
     scenariosTitle: "把关键词研究放回真实的业务问题里",
     scenariosDescription: "先明确要理解的竞品与用户意图，再决定下一步的研究动作，而不是从一串孤立关键词开始。",
@@ -40,6 +49,15 @@ export const HOMEPAGE_CONTENT_FALLBACK: LocaleContentMap<HomepageContent> = {
     eyebrow: "A research starting point for Amazon sellers",
     primaryCtaLabel: "See the method",
     secondaryCtaLabel: "Explore use cases",
+    researchPanelEyebrow: "Keyword research workspace",
+    researchPanelTitle: "Turn an open question into a research direction",
+    researchPanelDescription: "Start from an ASIN, product term, or competitor context before choosing what to investigate.",
+    researchSignals: [
+      { title: "Research target", body: "Define the ASIN, product term, or competitor context to examine." },
+      { title: "Connected signals", body: "View product context, competitor signals, and search intent together." },
+      { title: "Next hypothesis", body: "Capture the keyword or action direction that deserves validation next." },
+    ],
+    researchPanelNotice: "This is a research-path illustration. It does not show or promise live query results.",
     scenariosEyebrow: "Start with a question",
     scenariosTitle: "Put keyword research back into the business question",
     scenariosDescription: "Start with a product, competitor, and user intent before deciding what to investigate next.",
@@ -68,6 +86,11 @@ const HOMEPAGE_CONTENT_PROJECTION = `{
   eyebrow,
   primaryCtaLabel,
   secondaryCtaLabel,
+  researchPanelEyebrow,
+  researchPanelTitle,
+  researchPanelDescription,
+  researchSignals[]{ title, body },
+  researchPanelNotice,
   scenariosEyebrow,
   scenariosTitle,
   scenariosDescription,
@@ -92,7 +115,11 @@ export async function getHomepageRebuildContent(locale: Locale): Promise<Homepag
       `*[_type == "homepageContent" && locale == $locale][0]${HOMEPAGE_CONTENT_PROJECTION}`,
       { locale: getLocaleConfig(locale).sanityLocale },
     );
-    const parsed = HomepageContentSchema.safeParse(document);
+    // A published document can predate a newly added Studio field. Merge it
+    // with safe defaults so one missing presentation field never disables all
+    // existing operator-maintained homepage content.
+    const documentData = document && typeof document === "object" && !Array.isArray(document) ? document : {};
+    const parsed = HomepageContentSchema.safeParse({ ...fallback, ...documentData });
     return parsed.success ? parsed.data : fallback;
   } catch {
     return fallback;
