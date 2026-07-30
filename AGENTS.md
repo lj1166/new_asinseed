@@ -28,6 +28,8 @@
 
 **视觉效果边界**：除非用户为某个页面明确批准，禁止以 CSS/SVG `linear-gradient`、`radial-gradient`、blur、backdrop-filter 或“玻璃拟态”充当现代感。优先使用纯色、边框、排版、留白、SVG 实线、原生表单/状态元素和与真实任务有关的微交互；动效不可以替代产品逻辑或制造伪 dashboard，且必须服从 `prefers-reduced-motion`。
 
+**页面设计 Skill**：涉及新页面、页面角色/信息架构改变、视觉重构、交互体验或 UI 质量审查时，先读取 `.claude/skills/asinseed-saas-design/SKILL.md`。它将 Taste 的 Design Read、三旋钮、Anti-Slop 审计与已有页面重设计流程收敛为本项目的工具优先、中文优先、SEO/GEO、Sanity 字段职责和视觉边界规则；本文件与用户当轮要求优先于该 Skill。
+
 ## Boundaries
 **本地可逆改动默认执行；涉及生产内容、真实用户/支付/旧后端、线上 URL/流量或不可恢复删除时必须先获人工批准。**
 

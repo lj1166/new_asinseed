@@ -1,0 +1,4 @@
+interface:
+  display_name: "AsinSeed SaaS 设计"
+  short_description: "为 AsinSeed 工具型 SaaS 建立完整页面视觉与交互规范"
+  default_prompt: "Use $asinseed-saas-design to design or review an AsinSeed tool, conversion, or resource page."
