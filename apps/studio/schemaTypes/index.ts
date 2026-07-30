@@ -7,6 +7,8 @@ import { materialAsset } from "./materialAsset";
 import { homepageFaqEntry } from "./homepageFaqEntry";
 import { homepageTestimonialEntry } from "./homepageTestimonialEntry";
 import { homepageContent } from "./homepageContent";
+import { searchToolContent } from "./searchToolContent";
+import { searchToolSeo } from "./searchToolSeo";
 
 export const schemaTypes = [
   // Shared object types (registered first so documents can reference by name)
@@ -16,6 +18,8 @@ export const schemaTypes = [
   // Per-page SEO documents
   homepageSeo,
   homepageContent,
+  searchToolContent,
+  searchToolSeo,
   // Content pipeline (Track B)
   contentEntry,
   keywordEntry,

@@ -11,6 +11,22 @@
 | `/cn` | `/cn` | active / indexable | self (`/cn`) | 单语言阶段不输出 | 路径原样保留，无需 301 |
 | `/en` | `/en` | reserved / not yet served | 仅启用后生成 | 仅启用后生成 | 保留一一对应目标；不得暂时跳转到 `/cn` 或首页 |
 
+## P2 记录：合并搜索工具（2026-07-29）
+
+> P1 证明 `SearchAsinController` 的 `/{market}` dispatcher 与参数，但没有在限定读取范围内证明 `/cn` 前缀由何处挂载；JSP 自身确实生成 `/cn/{market}?q=...` 链接。因此以下映射保留可见旧路径语义、没有引入 301，同时明确该前缀证据限制。市场集合：`US`、`JP`、`UK`、`DE`、`FR`、`IT`、`ES`、`CA`、`IN`。
+
+| Legacy URL | New URL | 状态 | Canonical | Hreflang | 处置 |
+|---|---|---|---|---|---|
+| `/cn/{market}`（无 `q`；JSP URL 前缀证据有限） | `/cn/{market}` | active；路径语义原样保留 | 仅 `/cn/US` self；其余市场 canonical → `/cn/US` | 单语言阶段不输出 | 合并两个旧 JSP 为一个稳定工具入口；不使用 301。 |
+| `/cn/{market}?q=<ASIN>` | `/cn/{market}?q=<ASIN>` | active / `noindex` | `/cn/US` | 单语言阶段不输出 | 同路径处理 ASIN 查询状态；不进 sitemap。 |
+| `/cn/{market}?q=<keyword>&supplement=&exactMatch=` | `/cn/{market}?q=<keyword>&supplement=&exactMatch=` | active / `noindex` | `/cn/US` | 单语言阶段不输出 | 同路径处理关键词查询状态；不进 sitemap。 |
+
+| Page | index | reason | inSitemap | 备注 |
+|---|---|---|---|---|
+| `/cn/US`（无 `q`） | true | `static-content` | true | 稳定、可运营的任务工具入口；title/description/canonical 来自 `searchToolSeo`。 |
+| `/cn/{market}`（非 US，无 `q`） | false | `duplicate` | false | 同一工具的市场变体，不制造重复收录页。 |
+| `/cn/{market}?q=...` | false | `query-result` | false | 用户/查询特定状态，真实数据和权限尚未接入。 |
+
 启用任一预留语言的 P4 前置条件：已完成该语言本地化内容、Studio locale 选项、路由/导航、canonical/hreflang、sitemap 与浏览器/HTTP 回归验证。若确需修改已知旧 URL，必须先获得线上 URL 变更批准，并在本表记录唯一的等价目标与单跳 301 理由。
 
 ## 历史首轮 P2 记录（已被 D-015 取代，不作为当前实现依据）

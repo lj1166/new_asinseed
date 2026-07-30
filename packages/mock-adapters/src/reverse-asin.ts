@@ -1,14 +1,26 @@
-import type { ReverseAsinProvider, ReverseAsinQuery, ReverseAsinResult } from "@new-asinseed/contracts";
+import { getReverseAsinMode, type ReverseAsinProvider, type ReverseAsinQuery, type ReverseAsinResult } from "@new-asinseed/contracts";
 
-const FIXTURES: ReverseAsinResult[] = [
-  { asin: "B0MOCK0001", title: "Mock Wireless Earbuds", price: 29.99, rating: 4.3, category: ["Electronics", "Headphones"] },
-  { asin: "B0MOCK0002", title: "Mock Stainless Steel Water Bottle", price: 14.5, rating: 4.6, category: ["Home & Kitchen", "Bottles"] },
-  { asin: "B0MOCK0003", title: "Mock Yoga Mat", price: 19.99, rating: 4.1, category: ["Sports & Outdoors", "Fitness"] },
+const ASIN_FIXTURE = [
+  { keyword: "验证关键词 01", monthlySearches: 1200, trafficWeight: 82 },
+  { keyword: "验证关键词 02", monthlySearches: 860, trafficWeight: 61 },
+  { keyword: "验证关键词 03", monthlySearches: 420, trafficWeight: 37 },
+];
+
+const KEYWORD_FIXTURE = [
+  { keyword: "验证关键词 01", monthlySearches: 1200, productCount: 340, monthlyPurchases: 92, purchaseRate: 0.08 },
+  { keyword: "验证关键词 02", monthlySearches: 860, productCount: 210, monthlyPurchases: 55, purchaseRate: 0.06 },
+  { keyword: "验证关键词 03", monthlySearches: 420, productCount: 98, monthlyPurchases: 18, purchaseRate: 0.04 },
 ];
 
 export class MockReverseAsinProvider implements ReverseAsinProvider {
   async query(input: ReverseAsinQuery): Promise<ReverseAsinResult> {
-    const index = input.keywordOrAsin.length % FIXTURES.length;
-    return FIXTURES[index];
+    const mode = getReverseAsinMode(input.keywordOrAsin);
+    return {
+      market: input.market,
+      query: input.keywordOrAsin.trim(),
+      mode,
+      source: "mock",
+      items: mode === "asin" ? ASIN_FIXTURE : KEYWORD_FIXTURE,
+    };
   }
 }

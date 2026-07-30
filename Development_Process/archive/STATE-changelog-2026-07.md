@@ -4,6 +4,8 @@
 
 ## 2026-07-27
 
+- 2026-07-28：沉淀 D-016：当用户/负责人已明确新 SaaS 重构、引流获客转化、SEO/GEO 与运营目标时，Brief 是设计记录而非默认停工门；首页已获得 P2/P3 实施授权，未证实事实只限制对应主张。（自 `STATE.md` 近期记录归档，2026-07-29）
+
 - 2026-07-28：完成 D-015 中文优先语言底座：共享语言注册表仅启用 `/cn`，根路径/导航/Studio/sitemap/canonical 全部收敛；`/en`、`/zh-cn` 等 inactive 路径 404，Playwright 7/7、桌面/移动实页与 Studio HTTP 200 已验证。搜索/插件/帮助入口不再跳往未迁移 404。（自 `STATE.md` 近期记录归档，2026-07-29）
 
 - 2026-07-28：完成 D-014 批次 0 全站轻扫描：77 个前台 JSP、1 个优惠活动 JSP 和 49 个后台 JSP 按业务/功能/页面角色归并；页面地图给出新站候选组合与批次 1～5，未读取全量 include/Controller，也未创建页面或 Schema。（自 `STATE.md` 近期记录归档，2026-07-29）
@@ -57,3 +59,7 @@
 - 确定 handoff 目标为 `sellersprite.ai`；内容自动化进入主动建设范围。
 - 建立 `Development_Process/`，明确旧站只读、SDD 为主要实现依据、PRD 为验收对照。
 - 初始化仓库，创建 `AGENTS.md`、`CLAUDE.md` 与初版文档。
+
+## 2026-07-30 归档自 STATE.md
+
+- 2026-07-28：完成 `cn-index` 重构 P2/P3/技术 P4：新增并发布首页运营内容与 FAQ，正式替换 Sanity 测试 metadata/H1，移除旧 JSP 式搜索/评价/伙伴/视频/外链布局；`pnpm build`、typecheck 与 Playwright 9/9 通过，唯一 Layer C FAIL 为缺 OG 图。

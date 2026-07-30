@@ -11,6 +11,7 @@ const workSans = Work_Sans({ subsets: ["latin"], variable: "--font-work-sans" })
 
 export const metadata: Metadata = {
   title: "ASINSeed",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://asinseed.com"),
 };
 
 export function generateStaticParams() {

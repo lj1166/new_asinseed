@@ -1,7 +1,8 @@
-import type { HomepageSeo, SiteSettings } from "@new-asinseed/contracts";
+import type { HomepageSeo, SearchToolSeo, SiteSettings } from "@new-asinseed/contracts";
 
 import { getLocaleConfig, type Locale } from "./locales";
 import { getSanityClient } from "./sanity-client";
+import { readSanityWithinBudget } from "./sanity-request";
 
 // ---------------------------------------------------------------------------
 // GROQ projections
@@ -24,9 +25,9 @@ export async function getSiteSettings(): Promise<SiteSettings | null> {
   if (!client) return null;
 
   try {
-    const doc = await client.fetch<SiteSettings | null>(
+    const doc = await readSanityWithinBudget(client.fetch<SiteSettings | null>(
       `*[_type == "siteSettings"][0]{ siteUrl, brandName, sameAs, defaultSeo ${SEO_PROJECTION} }`,
-    );
+    ));
     return doc ?? null;
   } catch {
     return null;
@@ -42,7 +43,7 @@ export async function getHomepageSeo(locale: Locale): Promise<HomepageSeo | null
   if (!client) return null;
 
   try {
-    const doc = await client.fetch<HomepageSeo | null>(
+    const doc = await readSanityWithinBudget(client.fetch<HomepageSeo | null>(
       `*[_type == "homepageSeo" && locale == $locale][0]{
         locale,
         seo ${SEO_PROJECTION},
@@ -50,7 +51,22 @@ export async function getHomepageSeo(locale: Locale): Promise<HomepageSeo | null
         heroSubheading,
       }`,
       { locale: getLocaleConfig(locale).sanityLocale },
-    );
+    ));
+    return doc ?? null;
+  } catch {
+    return null;
+  }
+}
+
+export async function getSearchToolSeo(locale: Locale): Promise<SearchToolSeo | null> {
+  const client = getSanityClient();
+  if (!client) return null;
+
+  try {
+    const doc = await readSanityWithinBudget(client.fetch<SearchToolSeo | null>(
+      `*[_type == "searchToolSeo" && locale == $locale][0]{ locale, seo ${SEO_PROJECTION} }`,
+      { locale: getLocaleConfig(locale).sanityLocale },
+    ));
     return doc ?? null;
   } catch {
     return null;

@@ -38,6 +38,12 @@ export const HomepageSeoSchema = z.object({
 });
 export type HomepageSeo = z.infer<typeof HomepageSeoSchema>;
 
+export const SearchToolSeoSchema = z.object({
+  locale: z.enum(HOMEPAGE_LOCALES),
+  seo: SeoSchema,
+});
+export type SearchToolSeo = z.infer<typeof SearchToolSeoSchema>;
+
 // ---------------------------------------------------------------------------
 // ContentEntry SEO extension
 // ---------------------------------------------------------------------------

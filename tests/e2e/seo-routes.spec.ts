@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-test("sitemap exposes exactly the currently indexable locale homepages", async ({ request }) => {
+test("sitemap exposes the cn homepage and stable US tool entry only", async ({ request }) => {
   const response = await request.get("/sitemap.xml");
 
   expect(response.status()).toBe(200);
@@ -10,7 +10,8 @@ test("sitemap exposes exactly the currently indexable locale homepages", async (
   expect(xml).toContain("/cn</loc>");
   expect(xml).not.toContain("/en</loc>");
   expect(xml).not.toContain("/zh-cn</loc>");
-  expect(xml).not.toContain("/US");
+  expect(xml).toContain("/cn/US</loc>");
+  expect(xml).not.toContain("/cn/JP</loc>");
 });
 
 test("robots permits crawlers and declares the sitemap", async ({ request }) => {
